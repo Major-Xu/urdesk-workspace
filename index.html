@@ -113,6 +113,12 @@
 html[data-view="public"] .owner-only{display:none!important}
 html[data-view="public"] .sidebar .nav-group{display:grid;gap:6px}
 #publicLedgerBanner{margin:0 0 14px;padding:12px 16px}
+.home-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.home-info .panel{padding:16px}.home-info h2{margin:0 0 7px}.home-info .sub{margin:5px 0}
+.home-info form{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.home-info input{flex:1;min-width:120px}
+.home-info select{width:100%;margin-top:8px}.home-storage{margin:0;display:grid;gap:5px}
+.home-storage div{display:flex;justify-content:space-between;gap:12px}.home-storage dd{margin:0;text-align:right}
+@media(max-width:660px){.home-info{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -146,6 +152,28 @@ html[data-view="public"] .sidebar .nav-group{display:grid;gap:6px}
       </div>
       <div class="hero-stats"><a href="#tasks"><span>未完成待办</span><strong id="homeTaskCount">0</strong></a><a href="#notes"><span>随手记</span><strong id="homeNoteCount">0</strong></a></div>
     </header>
+    <div class="home-info" aria-label="首页信息">
+      <section class="panel" aria-labelledby="homeWeatherTitle">
+        <h2 id="homeWeatherTitle">今日天气</h2>
+        <p id="homeWeatherStatus" class="sub" role="status">搜索并选择城市后显示天气。</p>
+        <form id="homeWeatherForm">
+          <input id="homeWeatherCity" class="field" type="search" maxlength="60" placeholder="例如 上海" aria-label="搜索天气城市" required>
+          <button class="button" type="submit">查找城市</button>
+        </form>
+        <select id="homeWeatherResults" class="field" aria-label="选择天气城市" hidden></select>
+        <p class="sub"><a href="https://open-meteo.com/" target="_blank" rel="noopener">天气来源 Open-Meteo</a></p>
+      </section>
+      <section class="panel" aria-labelledby="homeStorageTitle">
+        <h2 id="homeStorageTitle">数据用量</h2>
+        <dl class="home-storage">
+          <div><dt>本机合计</dt><dd id="homeStorageTotal">—</dd></div>
+          <div><dt>设备台账</dt><dd id="homeStorageAssets">—</dd></div>
+          <div><dt>待办、笔记、工资和设置</dt><dd id="homeStorageWorkspace">—</dd></div>
+          <div><dt>云端公开台账</dt><dd id="homeStorageCloud">—</dd></div>
+        </dl>
+        <p class="sub">按数据的 UTF-8 大小估算，不含网页和数据库额外开销。</p>
+      </section>
+    </div>
     <h2 class="workspace-section">我的模块</h2>
     <div class="workspace-grid">
       <a class="panel module-card" href="#tasks"><div class="module-top"><span class="module-icon" data-icon="checklist"></span><span class="module-code">01 / TASKS</span></div><div><h3>工作待办</h3><p>记录要做的事、设置截止日期，完成后勾选。</p></div><div class="module-foot"><span id="homeTaskStatus">暂无待办</span><span data-icon="arrow"></span></div></a>
@@ -216,7 +244,7 @@ html[data-view="public"] .sidebar .nav-group{display:grid;gap:6px}
     <div id="salaryMetrics" class="metrics salary-metrics" aria-label="工资汇总"></div>
     <section class="panel list salary-list" aria-labelledby="salaryListTitle">
       <div class="list-top"><div><h2 id="salaryListTitle">到账记录</h2><p class="sub" id="salaryCaption"></p></div><select id="salaryYear" class="filter" aria-label="按工资归属年份筛选"></select></div>
-      <div class="table-wrap" tabindex="0" aria-label="工资记录表格，可横向滚动"><table><thead><tr><th scope="col">工资月份</th><th scope="col">到账日期</th><th scope="col">类型</th><th scope="col">来源</th><th scope="col">税前金额</th><th scope="col">实收金额</th><th scope="col">备注</th><th scope="col">操作</th></tr></thead><tbody id="salaryRows"></tbody></table></div>
+      <div class="table-wrap" tabindex="0" aria-label="工资记录表格，可横向滚动"><table><thead><tr><th scope="col">工资月份</th><th scope="col">到账日期</th><th scope="col">类型</th><th scope="col">来源</th><th scope="col">税前金额</th><th scope="col">实收金额</th><th scope="col">公积金收入</th><th scope="col">备注</th><th scope="col">操作</th></tr></thead><tbody id="salaryRows"></tbody></table></div>
     </section>
     </div>
   </section>
@@ -277,6 +305,7 @@ html[data-view="public"] .sidebar .nav-group{display:grid;gap:6px}
       <label>来源（选填）<input class="field" name="source" maxlength="80" placeholder="例如 公司名称"></label>
       <label>税前金额（元，选填）<input class="field" name="gross" type="number" min="0" max="999999999" step="0.01"></label>
       <label>实收金额（元）<input class="field" name="net" type="number" min="0" max="999999999" step="0.01" required></label>
+      <label>公积金收入（元，选填）<input class="field" id="salaryHousingFund" name="housingFund" type="number" min="0" max="999999999" step="0.01" aria-describedby="housingFundHint"><small id="housingFundHint" class="form-hint">填本笔记录对应的公积金到账额，避免同月重复填报。</small></label>
       <label class="wide">备注（选填）<input class="field" name="note" maxlength="180"></label>
     </div>
     <p id="salarySaveError" class="salary-error" role="alert"></p>
@@ -1291,7 +1320,8 @@ const validMonth=value=>typeof value==="string" && /^\d{4}-(0[1-9]|1[0-2])$/.tes
 const validWorkId=id=>typeof id==="string" && /^[\w-]{1,100}$/.test(id);
 const validSalary=entry=>entry && validWorkId(entry.id) && validMonth(entry.month) && validDate(entry.received) &&
   salaryKinds.includes(entry.kind) && validText(entry.source,80) && validText(entry.note,180) && validMoney(entry.net) &&
-  (entry.gross===null || validMoney(entry.gross));
+  (entry.gross===null || validMoney(entry.gross)) &&
+  (entry.housingFund==null || validMoney(entry.housingFund));
 const validSalaryList=list=>Array.isArray(list) && list.every(validSalary) && new Set(list.map(entry=>entry.id)).size===list.length;
 const validVault=vault=>vault && vault.version===1 && typeof vault.salt==="string" &&
   /^[A-Za-z0-9+/]{22}==$/.test(vault.salt) && typeof vault.iv==="string" && /^[A-Za-z0-9+/]{16}$/.test(vault.iv) &&
@@ -1394,6 +1424,7 @@ function renderWorkspaceName(page) {
 function renderWorkspace(page) {
   const pending=workspace.tasks.filter(task=>!task.done);
   if (page==="home") {
+    window.urdeskHomeInfo?.();
     $("homeTaskCount").textContent=pending.length;
     $("homeNoteCount").textContent=workspace.notes.length;
     const due=pending.filter(task=>task.due && task.due<=iso(today)).length;
@@ -1596,10 +1627,16 @@ function renderSalary() {
   const current=all.filter(entry=>entry.month===month);
   const gross=rows.filter(entry=>entry.gross!==null);
   const netTotal=items=>items.reduce((sum,entry)=>sum+entry.net,0);
+  const housingTotal=items=>{
+    const amounts=items.flatMap(entry=>entry.housingFund==null?[]:[entry.housingFund]);
+    return amounts.length?yuanWithCents(amounts.reduce((sum,amount)=>sum+amount,0)):"—";
+  };
   const metrics=[
     ["本月实收",yuanWithCents(netTotal(current)),month+" · "+current.length+" 笔","wallet"],
     [salaryYear==="all"?"全部实收":salaryYear+" 年实收",yuanWithCents(netTotal(rows)),"按工资归属月份 · "+rows.length+" 笔","trend"],
-    ["已填税前合计",gross.length?yuanWithCents(gross.reduce((sum,entry)=>sum+entry.gross,0)):"—",gross.length+" / "+rows.length+" 笔填写了税前金额","archive"]
+    ["已填税前合计",gross.length?yuanWithCents(gross.reduce((sum,entry)=>sum+entry.gross,0)):"—",gross.length+" / "+rows.length+" 笔填写了税前金额","archive"],
+    ["本月公积金",housingTotal(current),month+" · 不计入工资实收","wallet"],
+    [salaryYear==="all"?"全部公积金":salaryYear+" 年公积金",housingTotal(rows),"按工资归属月份汇总","trend"]
   ];
   $("salaryMetrics").innerHTML=metrics.map(([label,amount,caption,symbol])=>
     '<article class="metric"><div class="metric-label">'+label+'<span>'+icon(symbol)+'</span></div><div class="number">'+amount+
@@ -1608,9 +1645,9 @@ function renderSalary() {
   $("salaryRows").innerHTML=rows.map(entry=>
     '<tr><td>'+entry.month+'</td><td>'+entry.received+'</td><td>'+entry.kind+'</td><td class="salary-source">'+escape(entry.source || "—")+
     '</td><td>'+(entry.gross===null?"—":yuanWithCents(entry.gross))+'</td><td><strong class="amount">'+yuanWithCents(entry.net)+
-    '</strong></td><td><span class="salary-table-note">'+escape(entry.note || "—")+'</span></td><td><button type="button" class="icon-button" data-salary-edit="'+entry.id+
+    '</strong></td><td>'+(entry.housingFund==null?"—":yuanWithCents(entry.housingFund))+'</td><td><span class="salary-table-note">'+escape(entry.note || "—")+'</span></td><td><button type="button" class="icon-button" data-salary-edit="'+entry.id+
     '" aria-label="编辑 '+entry.month+' '+entry.kind+'">'+icon("edit")+'</button></td></tr>'
-  ).join("") || '<tr><td class="empty" colspan="8">'+(all.length?"所选年份暂无记录。":"还没有工资记录。点击「登记收入」添加第一笔。")+'</td></tr>';
+  ).join("") || '<tr><td class="empty" colspan="9">'+(all.length?"所选年份暂无记录。":"还没有工资记录。点击「登记收入」添加第一笔。")+'</td></tr>';
 }
 function openSalaryEditor(entry) {
   if (!salarySession || salaryBusy) return;
@@ -1627,6 +1664,7 @@ function openSalaryEditor(entry) {
   fields.source.value=entry?.source ?? "";
   fields.gross.value=entry?.gross==null?"":entry.gross/100;
   fields.net.value=entry?entry.net/100:"";
+  $("salaryHousingFund").value=entry?.housingFund==null?"":entry.housingFund/100;
   fields.note.value=entry?.note ?? "";
   $("salaryEditor").showModal();
   fields.month.focus();
@@ -1731,9 +1769,10 @@ $("salaryForm").onsubmit=async event=>{
     return;
   }
   const id=salaryEditId ?? ("salary-"+(globalThis.crypto?.randomUUID?.() ?? Date.now()+"-"+Math.random().toString(36).slice(2)));
+  const housingFund=$("salaryHousingFund");
   const entry={id,month:fields.month.value,received:fields.received.value,kind:fields.kind.value,
     source:fields.source.value.trim(),gross:fields.gross.value===""?null:amountFromInput(fields.gross),
-    net:amountFromInput(fields.net),note:fields.note.value.trim()};
+    net:amountFromInput(fields.net),housingFund:housingFund.value===""?null:amountFromInput(housingFund),note:fields.note.value.trim()};
   if (!validSalary(entry) || fields.net.value==="" || entry.received>iso(today)) { notify("请核对工资月份、到账日期和金额。"); return; }
   const entries=salarySession.entries;
   if (salaryEditId && !entries.some(item=>item.id===id)) {
@@ -1840,5 +1879,6 @@ render();
 </script>
 <script src="./public-ledger-config.js"></script>
 <script src="./public-ledger.js?v=2"></script>
+<script src="./home-info.js?v=1"></script>
 </body>
 </html>
