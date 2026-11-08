@@ -1,0 +1,1800 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f7f3">
+<title>个人工作台</title>
+<meta name="description" content="在同一个工作台管理待办、随手记和个人设备台账。">
+<style>
+:root{color-scheme:light;--ink:var(--theme-ink,#172822);--muted:var(--theme-muted,#54665e);--green:var(--theme-strong,#185841);--accent:var(--theme-accent,#c8ef76);--bg:var(--theme-surface,#f5f7f3);--line:var(--theme-line,#e1e8df);--white:#fff;--radius:18px;font-family:system-ui,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg);font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button,select{cursor:pointer}button{color:inherit}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--theme-focus,#36785b);outline-offset:3px}[hidden]{display:none!important}svg{display:block}a{color:inherit;text-decoration:none}.ico{width:20px;height:20px;flex:none}.shell{min-height:100vh;display:grid;grid-template-columns:224px minmax(0,1fr)}.sidebar{background:var(--theme-sidebar,#fbfcf9);border-right:1px solid var(--line);padding:27px 16px 20px;display:flex;flex-direction:column;position:sticky;top:0;height:100dvh}.brand{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:45px}.brand-icon{width:39px;height:39px;display:grid;place-items:center;background:var(--theme-dark,#193e30);color:var(--accent);border-radius:12px}.brand b{display:block;font-size:17px;letter-spacing:.04em}.brand small{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);margin-top:3px}.side-label{font-size:10px;font-weight:750;color:var(--muted);letter-spacing:.17em;margin:0 10px 10px}.nav{display:grid;gap:5px}.nav a,.nav button{border:0;background:none;text-align:left;display:flex;align-items:center;gap:11px;padding:11px 10px;border-radius:10px;font-size:13px;font-weight:650;width:100%;color:var(--muted)}.nav a:hover,.nav button:hover,.nav .active{background:var(--theme-soft,#eaf2e6);color:var(--theme-strong,#234b39)}.side-note{margin-top:auto;padding:13px 10px 1px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.8}.side-note strong{display:flex;align-items:center;gap:6px;color:var(--green);font-size:12px}.side-note .ico{width:14px;height:14px}.content{max-width:1500px;margin:0 auto;width:100%;padding:23px clamp(18px,3vw,46px) 32px;min-width:0}.topbar,.intro,.panel-top,.list-top,.filters,.row-actions,.legend,.modal-top,.modal-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}.topbar{font-size:12px;color:var(--muted);padding:0 0 18px;border-bottom:1px solid var(--line)}.topbar b{color:var(--ink)}.today{display:flex;align-items:center;gap:6px}.today .ico{width:15px;height:15px}.intro{padding:25px 0 18px}.overline{font-size:10px;letter-spacing:.19em;font-weight:800;color:var(--green);margin-bottom:6px}h1,h2,h3,p{margin:0}h1{font-size:clamp(26px,3.3vw,40px);letter-spacing:-.045em;line-height:1.17}h2{font-size:18px;letter-spacing:-.02em}h3{font-size:14px}.sub{margin-top:8px;color:var(--muted);font-size:13px;line-height:1.65}.button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:8px 12px;font-size:12px;font-weight:700;white-space:nowrap}.button:hover{background:var(--theme-soft,#eef4eb)}.button .ico{width:16px;height:16px}.primary{background:var(--theme-primary,#1c4837);color:#fff;border-color:var(--theme-primary,#1c4837)}.primary:hover{background:var(--theme-primary-hover,#28624c)}.demo{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--theme-soft,#eaf2e5);border:1px solid var(--theme-line,#dfead9);padding:7px 11px 7px 13px;border-radius:11px;margin-bottom:15px;font-size:12px;color:var(--theme-strong,#38584a);line-height:1.55}.demo b{color:var(--theme-strong,#234b39)}.demo .button{min-height:30px;padding:4px 9px}.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:15px}.metric{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 15px;min-width:0}.metric:first-child{background:var(--theme-soft,#e9f2e5);border-color:var(--theme-line,#dce9d8)}.metric-label{display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:12px;color:var(--muted);font-weight:650}.metric-label span{display:grid;place-items:center;background:var(--theme-soft,#eef3ec);border-radius:8px;width:28px;height:28px;color:var(--theme-strong,#2c674e)}.metric:first-child .metric-label span{background:var(--theme-soft-strong,#d9ead4)}.metric .ico{width:16px;height:16px}.number{font-size:clamp(19px,2.65vw,33px);letter-spacing:-.055em;font-weight:760;font-variant-numeric:tabular-nums;margin-top:4px;overflow-wrap:anywhere}.caption{margin-top:4px;font-size:11px;color:var(--muted)}.analytics{display:grid;grid-template-columns:minmax(0,2.15fr) minmax(235px,1fr);gap:14px;margin-bottom:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);min-width:0}.trend{background:var(--theme-dark,#173e31);color:var(--theme-on-dark,#f6fff6);padding:16px 17px 13px;overflow:hidden;border-color:var(--theme-dark,#173e31)}.trend .sub{color:var(--theme-muted-on-dark,#b8d2c4);font-size:11px;margin-top:4px}.seg{display:flex;gap:3px;background:#ffffff13;border-radius:8px;padding:3px;flex:none}.seg button{background:none;border:0;border-radius:6px;color:var(--theme-muted-on-dark,#d2e2d8);padding:5px 8px;font-size:11px;font-weight:650;white-space:nowrap}.seg button[aria-pressed=true]{background:var(--theme-accent,#c8ef76);color:var(--theme-dark,#20371f)}.trend :focus-visible{outline-color:var(--accent)}.chart{margin-top:8px;position:relative}.chart svg{width:100%;overflow:visible}.tip{position:absolute;z-index:1;top:5px;transform:translateX(-50%);pointer-events:none;background:var(--theme-faint,#f7fff2);color:var(--theme-dark,#173e31);padding:5px 8px;border-radius:7px;font-size:10px;white-space:nowrap;box-shadow:0 4px 14px #0003}.legend{justify-content:flex-start;gap:16px;font-size:10px;color:var(--theme-muted-on-dark,#c9ddd2);margin-top:4px}.legend span{display:flex;align-items:center;gap:5px}.legend i{width:16px;border-top:2px solid var(--accent)}.legend span:nth-child(2) i{border-top-style:dashed}.mix{padding:16px 15px 13px}.mix .sub{font-size:11px;margin-top:4px}.mix-body{display:flex;align-items:center;gap:14px;margin-top:16px}.donut{position:relative;display:grid;place-items:center;width:106px;aspect-ratio:1;flex:none;border-radius:50%;background:var(--theme-soft,#eaf0e8)}.donut:before{content:"";position:absolute;inset:13px;border-radius:50%;background:white}.donut div{z-index:1;text-align:center;line-height:1.22}.donut b{display:block;font-size:21px}.donut small{font-size:10px;color:var(--muted)}.mix-list{display:grid;gap:9px;flex:1;min-width:0;font-size:11px}.mix-item{display:grid;grid-template-columns:8px 1fr auto;gap:5px;align-items:center}.mix-item i{height:7px;border-radius:50%}.mix-item b{font-variant-numeric:tabular-nums;white-space:nowrap}.mix-note{color:var(--muted);font-size:11px;margin-top:13px;padding-top:10px;border-top:1px solid var(--line);line-height:1.5}.list{scroll-margin-top:12px}.list-top{padding:14px 15px 12px}.list-top .sub{font-size:11px;margin-top:4px}.filters{justify-content:flex-end;flex-wrap:wrap;gap:7px}.field,.filter{min-width:0;border:1px solid var(--theme-line,#dce5dc);border-radius:9px;background:#fff;padding:8px 9px;color:var(--ink);font-size:12px}.filter[type=search]{width:145px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;text-align:left;font-size:12px;white-space:nowrap}th{background:var(--theme-faint,#f5f8f4);color:var(--theme-muted,#53655d);font-size:11px;font-weight:650}th,td{padding:10px 12px;border-top:1px solid var(--theme-line,#edf1ec)}th:first-child,td:first-child{padding-left:15px}th:last-child,td:last-child{padding-right:15px}tbody tr:hover{background:var(--theme-faint,#fafcf9)}.device{display:flex;align-items:center;gap:9px}.device-icon{width:33px;height:33px;display:grid;place-items:center;flex:none;border-radius:9px;background:var(--theme-soft,#e9f2e6);color:var(--theme-strong,#38624f)}.device-icon .ico{width:17px;height:17px}.device button{border:0;padding:0;background:none;text-align:left;font-weight:750;white-space:normal;overflow-wrap:anywhere;max-width:240px}.device button:hover{text-decoration:underline}.device small,.minor{display:block;color:var(--muted);font-size:10px;margin-top:3px}.amount{font-weight:750;font-variant-numeric:tabular-nums}.progress{display:block;width:69px;background:var(--theme-soft,#edf2eb);border-radius:10px;height:4px;margin-top:5px;overflow:hidden}.progress i{display:block;height:100%;background:var(--theme-progress,#67977b)}.icon-button{border:0;border-radius:8px;background:transparent;display:grid;place-items:center;width:30px;height:30px;color:var(--green);flex:none}.icon-button:hover{background:var(--theme-soft,#eaf2e5)}.icon-button .ico{width:17px;height:17px}.empty{text-align:center;padding:28px 10px;color:var(--muted);line-height:1.8}.empty .button{margin-top:8px}.foot{margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6}.foot button{background:none;border:0;padding:0;color:var(--green);text-decoration:underline;font-size:inherit}dialog{width:min(530px,calc(100% - 26px));max-height:calc(100dvh - 30px);overflow:auto;border:1px solid var(--line);border-radius:19px;padding:18px;color:var(--ink);box-shadow:0 20px 80px var(--theme-shadow,#10291b40)}dialog::backdrop{background:var(--theme-backdrop,#10291b77)}.modal-top{align-items:flex-start;margin-bottom:14px}.modal-top .icon-button{margin:-3px -3px 0 0}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.form-grid label{display:grid;gap:5px;font-size:12px;font-weight:650}.form-grid input,.form-grid select{width:100%}.wide{grid-column:1/-1}.modal-foot{margin-top:14px;justify-content:flex-end;flex-wrap:wrap}.danger{color:#9e332d;margin-right:auto}.notice{position:fixed;bottom:16px;right:16px;max-width:calc(100vw - 32px);border-radius:10px;background:var(--theme-dark,#173e31);color:white;padding:9px 12px;font-size:12px;z-index:5}.guide{font-size:13px;line-height:1.75;color:var(--muted)}.guide p+p{margin-top:9px}.guide strong{color:var(--ink)}.details{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:12px 0}.details div{background:var(--theme-soft,#f0f5ee);border-radius:10px;padding:8px;font-size:11px;color:var(--muted);overflow-wrap:anywhere}.details b{display:block;font-size:16px;color:var(--ink);margin-top:3px}.detail-chart{margin-top:12px}.detail-note{overflow-wrap:anywhere}
+@media(max-width:1150px){.shell{grid-template-columns:177px minmax(0,1fr)}.sidebar{padding-inline:12px}.mix-body{gap:10px}.donut{width:86px}.donut:before{inset:11px}}
+@media(max-width:900px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto;flex-direction:row;align-items:center;justify-content:space-between;border-right:0;border-bottom:1px solid var(--line);padding:9px 15px;gap:8px}.brand{margin:0;padding:0}.brand-icon{width:33px;height:33px}.brand b{font-size:14px}.brand small,.side-label,.side-note{display:none}.nav{display:flex;gap:2px}.nav a,.nav button{padding:7px;font-size:11px;gap:4px}.nav .ico{width:14px;height:14px}.content{padding-top:14px}}
+@media(max-width:660px){.topbar{padding-bottom:10px}.intro{padding:16px 0 12px;align-items:flex-end}.intro .sub{font-size:11px}.intro .button{padding:6px 8px;min-height:33px}.metrics{grid-template-columns:1fr 1fr;gap:8px}.metric{padding:9px 11px}.analytics{grid-template-columns:1fr;gap:9px}.mix-body{max-width:410px}.list-top{align-items:flex-start;flex-direction:column}.filters{justify-content:flex-start}.filter[type=search]{width:126px}.nav .ico{display:none}.trend{padding-inline:11px}.seg button{padding-inline:6px}.demo{font-size:11px}.demo .button{font-size:11px}}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+.asset-number{font-family:ui-monospace,monospace;letter-spacing:.035em}.status{display:inline-block;border-radius:999px;padding:2px 7px;background:var(--theme-soft,#eaf2e6);color:var(--theme-strong,#24583f);font-size:11px;font-weight:650;white-space:nowrap}.status.disposed{background:#f3eee5;color:#665237}.form-hint{font-weight:400;color:var(--muted);font-size:11px;line-height:1.5}
+
+.section-title{font-size:12px;font-weight:800;color:var(--green);padding:9px 0 3px;border-top:1px solid var(--line);margin-top:3px}.cost-preview{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--theme-soft,#eaf2e6);padding:9px 11px;border-radius:9px;font-size:12px;color:var(--green)}.cost-preview strong{font-size:16px}.editor-wide{width:min(650px,calc(100% - 26px))}.ledger-tools{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px;padding:0 15px 12px}.export-actions{display:flex;gap:6px;flex-wrap:wrap}.list .table-wrap{border-radius:0 0 var(--radius) var(--radius)}.list td{vertical-align:top}.list td:first-child,.list th:first-child{position:sticky;left:0;z-index:1;background:#fff;box-shadow:1px 0 0 var(--theme-line,#edf1ec)}.list th:first-child{background:var(--theme-faint,#f5f8f4)}.price-summary{min-width:106px}.card-section{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.card-section h3{margin-bottom:8px}.card-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 12px;margin:0}.card-fields div{display:grid;gap:3px}.card-fields dt{font-size:11px;color:var(--muted)}.card-fields dd{margin:0;font-size:13px;overflow-wrap:anywhere}.card-link{border:0;background:none;padding:0;text-align:left;color:var(--green);text-decoration:underline;font-size:inherit}.print-report{display:none}
+@media(max-width:660px){.ledger-tools .filters{width:100%}.ledger-tools .filter[type=search]{width:min(165px,100%)}.list .device button{max-width:135px}.list .device-icon{display:none}}
+@media print{@page{size:A4 landscape;margin:11mm}body{background:white;color:black}body.printing>*{display:none!important}body.printing>.print-report{display:block!important}.print-report h1{font-size:19pt}.print-report p{font-size:9pt;margin:5px 0 12px}.print-report table{font-size:8.5pt;white-space:normal;table-layout:fixed}.print-report thead{display:table-header-group}.print-report tr{break-inside:avoid}.print-report td,.print-report th{vertical-align:top;border:1px solid #bbb;padding:5px!important;overflow-wrap:anywhere}.print-report th{color:#111;background:#f1f3ef;print-color-adjust:exact}.print-report small{display:block;font-size:7.6pt;line-height:1.5;color:#333}.print-report strong{display:block}}
+.status.maintenance{background:#fff0db;color:#754713}.status.paused{background:#e8edf7;color:#384d76}.card-actions{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}.card-actions .button{min-height:33px}.activity-list{padding:0;list-style:none;margin:0;display:grid;gap:6px}.activity-list li{padding:8px 10px;background:var(--theme-faint,#f5f8f4);border-radius:8px;font-size:12px;line-height:1.6;overflow-wrap:anywhere}.activity-list small{display:block;color:var(--muted);font-size:11px}.activity-list p{margin-top:2px}.row-actions{justify-content:flex-start;gap:5px}.row-manage{min-height:30px;padding:4px 8px}
+#editor:has(#editorBack:not([hidden])) .modal-foot,#activity .modal-foot{position:sticky;bottom:0;z-index:2;background:var(--white);padding:9px 0 2px;box-shadow:0 -7px 12px var(--white)}
+.forecast-summary{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 12px;margin:3px 0 10px;padding:7px 9px;border-radius:8px;background:#ffffff13;color:var(--theme-muted-on-dark,#d7e9dd);font-size:11px}.forecast-summary strong{color:var(--theme-highlight,#e1ffaf);font-size:13px}.forecast-label{fill:var(--theme-highlight,#e1ffaf);font-size:11px;font-weight:750;paint-order:stroke;stroke:var(--theme-dark,#173e31);stroke-width:3px;stroke-linejoin:round}.donut div{width:calc(100% - 26px)}.donut b{font-size:16px;line-height:1.05;letter-spacing:-.045em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.donut small{font-size:9px}.mix-rounding{display:block;margin-top:3px}
+@media(max-width:1150px){.donut div{width:calc(100% - 22px)}.donut b{font-size:13px}}
+.nav-group{display:grid;gap:3px;margin-left:13px;padding-left:6px;border-left:1px solid var(--line)}
+.nav-group a,.nav-group button{padding-block:8px;font-size:12px}
+.workspace-hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(185px,.65fr);align-items:center;gap:24px;margin:24px 0 25px;padding:clamp(21px,4vw,46px);border-radius:23px;background:var(--theme-dark,#173e31);color:var(--theme-on-dark,#f3fbf3)}
+.workspace-hero .overline{color:var(--accent)}.workspace-hero .sub{color:var(--theme-muted-on-dark,#c0d9cb);max-width:410px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.hero-actions .primary{color:var(--theme-dark,#173e31);background:var(--accent);border-color:var(--accent)}
+.hero-actions .primary:hover{background:var(--theme-highlight,#dafa9c)}.hero-actions .hero-secondary{color:var(--theme-on-dark,#e4f5e9);background:#ffffff0e;border-color:#ffffff35}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;border-radius:13px;background:#ffffff24;border:1px solid #ffffff24}
+.hero-stats a{display:grid;gap:4px;align-content:center;padding:13px;background:var(--theme-dark-card,#214a3c);color:var(--theme-muted-on-dark,#cae3d5);font-size:11px}
+.hero-stats a:hover{background:var(--theme-dark-card-hover,#2b5847)}.hero-stats strong{font-size:25px;color:var(--theme-on-dark,#f3fbf3)}
+.workspace-section{margin-bottom:12px}.workspace-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.module-card{display:grid;gap:10px;padding:16px;min-height:157px;transition:border-color .15s,background .15s}
+.module-card:hover{border-color:var(--theme-edge,#9ab6a5);background:var(--theme-faint,#fcfefb)}.module-card p{color:var(--muted);font-size:12px;line-height:1.6}
+.module-top,.module-foot,.work-tools,.work-row{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.module-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--theme-soft,#e9f2e6);color:var(--theme-strong,#295a44)}
+.module-icon.notes-icon{background:#f6f0df;color:#795c23}.module-icon.ledger-icon{background:#e8edf7;color:#384d76}
+.module-foot{color:var(--green);font-size:12px;font-weight:700}.module-foot .ico{width:16px;height:16px}
+.module-code{font-size:10px;color:var(--muted);letter-spacing:.12em}.workspace-foot{margin-top:14px;color:var(--muted);font-size:11px}
+.work-tools{padding:12px 15px;border-bottom:1px solid var(--line);flex-wrap:wrap}.work-tools .sub{margin:0}
+.work-list{list-style:none;padding:0;margin:0}.work-row{padding:11px 15px}.work-row+.work-row{border-top:1px solid var(--line)}
+.work-row label{display:flex;align-items:flex-start;gap:9px;min-width:0;cursor:pointer}.work-row input{accent-color:var(--green);width:16px;height:16px;flex:none}
+.work-row strong,.note-card h3{overflow-wrap:anywhere}.work-row strong{font-size:13px}
+.work-row:has(input:checked) strong{color:var(--muted);text-decoration:line-through}
+.due-late{color:#9e332d}.work-notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:11px}
+.note-card{padding:14px;text-align:left;cursor:pointer;color:inherit}.note-card:hover{border-color:var(--theme-edge,#9ab6a5)}
+.note-card p{white-space:pre-wrap;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted);font-size:12px;margin:6px 0}
+.workspace-form textarea{font:inherit;min-height:145px;resize:vertical}
+@media(max-width:900px){.sidebar{flex-wrap:wrap}.sidebar .nav{flex-wrap:wrap}.nav-group{display:flex;flex-wrap:wrap;margin-left:2px}.nav-group a,.nav-group button{width:auto;font-size:11px}.sidebar .nav>a,.sidebar .nav>button{width:auto}}
+@media(max-width:660px){.sidebar .nav{width:100%}.nav-group{width:100%;margin-top:2px}.workspace-hero{grid-template-columns:1fr;gap:16px;margin:14px 0 18px}.workspace-grid{grid-template-columns:1fr;gap:8px}.module-card{min-height:0;padding:13px}.hero-stats a{padding:9px 12px}.hero-stats strong{font-size:20px}}
+.hero-heading{display:flex;align-items:center;flex-wrap:wrap;gap:8px 13px}
+.hero-heading h1,.workspace-hero .overline,.brand b,.topbar>span:first-child{overflow-wrap:anywhere}
+.hero-heading h1{min-width:0}.hero-rename{color:var(--theme-on-dark,#edf8ef);background:#ffffff0e;border-color:#ffffff35;min-height:32px;padding:5px 8px}.hero-rename:hover{background:#ffffff22}
+.workspace-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.module-icon.salary-icon{background:var(--theme-soft,#e4f0eb);color:var(--theme-strong,#265f54)}
+.salary-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.salary-list .table-wrap{overflow-x:auto}.salary-list .salary-source{max-width:200px;white-space:normal;overflow-wrap:anywhere}
+.salary-table-note{display:block;max-width:215px;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:1120px){.workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:660px){.workspace-grid{grid-template-columns:1fr}.salary-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+:root[data-custom-theme] {
+  --theme-ink: color-mix(in srgb, var(--theme-seed) 15%, #12181f);
+  --theme-muted: color-mix(in srgb, var(--theme-seed) 16%, #50565d);
+  --theme-strong: color-mix(in srgb, var(--theme-seed) 31%, #172329);
+  --theme-accent: color-mix(in srgb, var(--theme-seed) 45%, white);
+  --theme-surface: color-mix(in srgb, var(--theme-seed) 6%, #fafbfc);
+  --theme-sidebar: color-mix(in srgb, var(--theme-seed) 3%, white);
+  --theme-line: color-mix(in srgb, var(--theme-seed) 16%, #e6e9ed);
+  --theme-focus: color-mix(in srgb, var(--theme-seed) 40%, #3a424d);
+  --theme-dark: color-mix(in srgb, var(--theme-seed) 25%, #111820);
+  --theme-primary: color-mix(in srgb, var(--theme-seed) 29%, #182029);
+  --theme-primary-hover: color-mix(in srgb, var(--theme-seed) 36%, #20262d);
+  --theme-soft: color-mix(in srgb, var(--theme-seed) 12%, #f7f8fa);
+  --theme-soft-strong: color-mix(in srgb, var(--theme-seed) 22%, #f5f7fa);
+  --theme-faint: color-mix(in srgb, var(--theme-seed) 5%, #fafbfc);
+  --theme-progress: color-mix(in srgb, var(--theme-seed) 60%, #74828e);
+  --theme-edge: color-mix(in srgb, var(--theme-seed) 38%, #c2cad2);
+  --theme-on-dark: color-mix(in srgb, var(--theme-seed) 4%, white);
+  --theme-muted-on-dark: color-mix(in srgb, var(--theme-seed) 14%, #f0f4f8);
+  --theme-highlight: color-mix(in srgb, var(--theme-accent) 70%, white);
+  --theme-dark-card: color-mix(in srgb, var(--theme-dark) 90%, white);
+  --theme-dark-card-hover: color-mix(in srgb, var(--theme-dark) 85%, white);
+  --theme-shadow: color-mix(in srgb, var(--theme-dark) 25%, transparent);
+  --theme-backdrop: color-mix(in srgb, var(--theme-dark) 47%, transparent);
+}
+.workspace-hero :focus-visible { outline-color:var(--accent) }
+.theme-preview {display:grid;gap:6px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);margin:12px 0}
+.theme-preview-banner {padding:9px 10px;border-radius:8px;background:var(--theme-dark,#173e31);color:var(--theme-on-dark,#f6fff6);font-size:12px;font-weight:700}
+.theme-preview-accent {display:inline-block;padding:4px 7px;margin-left:6px;border-radius:6px;background:var(--accent);color:var(--theme-dark,#173e31);font-size:11px}
+.theme-presets {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.theme-preset {justify-content:flex-start;min-width:0;padding-inline:8px}
+.theme-preset[aria-pressed=true] {border-color:var(--green);background:var(--theme-soft,#eaf2e6);color:var(--green)}
+.theme-swatch {width:15px;height:15px;flex:none;border:1px solid #0003;border-radius:50%;background:var(--swatch)}
+.theme-custom {display:flex;align-items:center;justify-content:space-between;gap:9px;margin-top:12px;font-size:12px;color:var(--muted)}
+.theme-custom label {display:flex;align-items:center;gap:8px;color:var(--ink);font-weight:650}
+.theme-custom input {width:44px;height:32px;padding:2px;border:1px solid var(--line);border-radius:7px;background:var(--white);cursor:pointer}
+.theme-custom output {font-family:ui-monospace,monospace}
+@media(max-width:390px){.theme-presets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.salary-gate{width:min(100%,470px);padding:clamp(15px,3vw,24px);margin:0 auto 18px}
+.salary-gate .module-icon{margin-bottom:10px}.salary-gate .form-grid{margin-top:14px}
+.salary-gate .button{margin-top:12px}.salary-gate .guide{font-size:11px;margin-top:12px}
+.salary-error{font-size:12px;color:#9e332d;margin-top:9px;min-height:0}
+.salary-error:empty{display:none}.salary-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px}
+.sidebar-settings{margin-top:auto;padding-top:12px;flex:none}.sidebar .side-note{margin-top:8px}
+.settings-card{max-width:720px;padding:16px}.settings-card h2{margin-bottom:12px}
+.settings-row,.settings-label,.settings-controls{display:flex;align-items:center;gap:10px}
+.settings-row{justify-content:space-between;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
+.settings-label .sub{margin-top:3px;font-size:12px}.settings-controls{flex-wrap:wrap}
+.settings-theme{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
+.settings-card+.settings-card{margin-top:13px}.settings-status{margin-top:9px;font-size:12px;color:var(--muted)}.settings-status:empty{display:none}
+@media(max-width:900px){.sidebar .sidebar-settings{margin:0;padding:0;width:auto}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <a class="brand" href="#home"><span class="brand-icon" data-icon="brand"></span><span><b id="workspaceBrand">个人工作台</b><small>MY WORKSPACE</small></span></a>
+  <div class="side-label">工作空间</div>
+  <nav class="nav" aria-label="主导航">
+    <a href="#home" data-nav="home"><span data-icon="grid"></span>工作台首页</a>
+    <a href="#tasks" data-nav="tasks"><span data-icon="checklist"></span>工作待办</a>
+    <a href="#notes" data-nav="notes"><span data-icon="note"></span>随手记</a>
+    <a href="#salary" data-nav="salary"><span data-icon="wallet"></span>工资收入</a>
+    <a href="#overview" id="ledgerNavLink"><span data-icon="laptop"></span>设备台账</a>
+    <div id="ledgerNav" class="nav-group" hidden>
+      <a href="#overview" data-nav="overview">资产总览</a>
+      <a href="#devices" data-nav="devices">设备清单</a>
+      <button id="backupButton" type="button">设备数据备份</button>
+    </div>
+  </nav>
+  <nav class="nav sidebar-settings" aria-label="工作台设置">
+    <a href="#settings" data-nav="settings"><span data-icon="settings"></span>设置</a>
+  </nav>
+  <div class="side-note"><strong><span data-icon="lock"></span>浏览器本地保存</strong>个人记录保存在当前浏览器中。</div>
+</aside>
+<main class="content">
+  <div class="topbar"><span><span id="workspaceBreadcrumb">个人工作台</span> <span aria-hidden="true"> / </span> <b id="breadcrumb">首页</b></span><span class="today"><span data-icon="calendar"></span><span id="today"></span></span></div>
+  <section id="homePage" hidden>
+    <header class="workspace-hero">
+      <div><div class="overline" id="workspaceEyebrow">MY WORKSPACE</div><div class="hero-heading"><h1 id="workspaceHeading">个人工作台</h1><button type="button" class="button hero-rename" id="renameWorkspace"><span data-icon="edit"></span>编辑名称</button></div><p class="sub">安排工作、记录灵感，随时查看设备资产和工资收入。</p>
+        <div class="hero-actions"><a class="button primary" href="#tasks">打开工作待办 <span data-icon="arrow"></span></a><a class="button hero-secondary" href="#overview">进入设备台账</a></div>
+      </div>
+      <div class="hero-stats"><a href="#tasks"><span>未完成待办</span><strong id="homeTaskCount">0</strong></a><a href="#notes"><span>随手记</span><strong id="homeNoteCount">0</strong></a></div>
+    </header>
+    <h2 class="workspace-section">我的模块</h2>
+    <div class="workspace-grid">
+      <a class="panel module-card" href="#tasks"><div class="module-top"><span class="module-icon" data-icon="checklist"></span><span class="module-code">01 / TASKS</span></div><div><h3>工作待办</h3><p>记录要做的事、设置截止日期，完成后勾选。</p></div><div class="module-foot"><span id="homeTaskStatus">暂无待办</span><span data-icon="arrow"></span></div></a>
+      <a class="panel module-card" href="#notes"><div class="module-top"><span class="module-icon notes-icon" data-icon="note"></span><span class="module-code">02 / NOTES</span></div><div><h3>随手记</h3><p>留存灵感、临时信息和工作记录。</p></div><div class="module-foot"><span>打开随手记</span><span data-icon="arrow"></span></div></a>
+      <a class="panel module-card" href="#overview"><div class="module-top"><span class="module-icon ledger-icon" data-icon="laptop"></span><span class="module-code">03 / ASSETS</span></div><div><h3>设备台账</h3><p>管理设备卡片、折旧估值、维修和处置记录。</p></div><div class="module-foot"><span id="homeLedgerStatus">打开设备台账</span><span data-icon="arrow"></span></div></a>
+      <a class="panel module-card" href="#salary"><div class="module-top"><span class="module-icon salary-icon" data-icon="wallet"></span><span class="module-code">04 / INCOME</span></div><div><h3>工资收入</h3><p>记录工资、奖金和补贴，按年查看实收合计。</p></div><div class="module-foot"><span>打开工资记录</span><span data-icon="arrow"></span></div></a>
+    </div>
+    <p class="workspace-foot">记录保存在当前浏览器。</p>
+  </section>
+  <section id="tasksPage" hidden>
+    <header class="intro"><div><div class="overline">TASKS</div><h1>工作待办</h1><p class="sub">把要做的事记下来，按截止日期安排。</p></div><button id="addTask" class="button primary"><span data-icon="plus"></span>添加待办</button></header>
+    <div class="panel"><div class="work-tools"><p class="sub" id="taskCaption"></p><select id="taskFilter" class="filter" aria-label="筛选待办"><option value="open">未完成</option><option value="all">全部待办</option><option value="done">已完成</option></select></div><ul class="work-list" id="taskRows"></ul></div>
+  </section>
+  <section id="notesPage" hidden>
+    <header class="intro"><div><div class="overline">NOTES</div><h1>随手记</h1><p class="sub">随时记录灵感和工作信息，点击笔记可以继续编辑。</p></div><button id="addNote" class="button primary"><span data-icon="plus"></span>新建笔记</button></header>
+    <div class="work-notes" id="noteRows"></div>
+  </section>
+  <section id="settingsPage" hidden>
+    <header class="intro"><div><div class="overline">SETTINGS</div><h1>设置</h1><p class="sub">管理工作台外观与本机备份。</p></div></header>
+    <section class="panel settings-card" aria-labelledby="appearanceTitle">
+      <h2 id="appearanceTitle">外观</h2>
+      <div class="settings-row">
+        <div class="settings-label"><span class="module-icon" data-icon="palette"></span><div><h3>主题颜色</h3><p class="sub">选择预设或自选颜色，应用到整个工作台。</p></div></div>
+        <div class="settings-controls"><span class="settings-theme"><span class="theme-swatch" id="settingsThemeSwatch" aria-hidden="true"></span><span id="settingsThemeName"></span></span><button id="themeButton" class="button" type="button">更改主题颜色</button></div>
+      </div>
+    </section>
+    <section class="panel settings-card" aria-labelledby="fullBackupTitle">
+      <h2 id="fullBackupTitle">全量备份与恢复</h2>
+      <div class="settings-row">
+        <div class="settings-label"><span class="module-icon" data-icon="archive"></span><div><h3>工作台数据</h3><p class="sub">备份包含设备、待办、笔记、设置和已加密的工资记录。</p></div></div>
+        <div class="settings-controls"><button id="exportFullBackup" class="button primary" type="button">下载完整备份</button><button id="importFullBackup" class="button" type="button">从备份恢复</button><input id="fullBackupFile" type="file" accept=".json,application/json" hidden></div>
+      </div>
+      <p class="sub">记录仅保存在当前浏览器。换设备或换网址时，请先下载完整备份，再在新地址恢复。恢复会替换当前记录，工资仍需原密码解锁。</p>
+      <p id="fullBackupStatus" class="settings-status" role="status"></p>
+    </section>
+  </section>
+  <section id="salaryPage" hidden>
+    <header class="intro"><div><div class="overline">SALARY INCOME</div><h1>工资收入</h1><p class="sub">按工资归属月份统计，金额单位为人民币。</p></div><div id="salaryActions" class="salary-actions" hidden><button id="lockSalary" class="button" type="button"><span data-icon="lock"></span>锁定</button><button id="addSalary" class="button primary" type="button"><span data-icon="plus"></span>登记收入</button></div></header>
+    <section class="panel salary-gate" id="salaryGate" aria-labelledby="salaryGateTitle">
+      <span class="module-icon salary-icon" data-icon="lock"></span>
+      <h2 id="salaryGateTitle">解锁工资收入</h2><p class="sub" id="salaryGateHint"></p>
+      <form id="salaryUnlockForm">
+        <div class="form-grid">
+          <label class="wide">密码<input class="field" type="password" id="salaryPassword" maxlength="128" required autocomplete="current-password"></label>
+          <label class="wide" id="salaryConfirmField" hidden>确认密码<input class="field" type="password" id="salaryConfirmPassword" maxlength="128" autocomplete="new-password"></label>
+        </div>
+        <p id="salaryGateError" class="salary-error" role="alert"></p>
+        <button id="salaryUnlock" class="button primary">解锁</button>
+      </form>
+      <p class="guide">工资记录加密保存在当前浏览器。忘记密码后无法恢复加密记录。</p>
+    </section>
+    <div id="salaryContent" hidden>
+    <div id="salaryMetrics" class="metrics salary-metrics" aria-label="工资汇总"></div>
+    <section class="panel list salary-list" aria-labelledby="salaryListTitle">
+      <div class="list-top"><div><h2 id="salaryListTitle">到账记录</h2><p class="sub" id="salaryCaption"></p></div><select id="salaryYear" class="filter" aria-label="按工资归属年份筛选"></select></div>
+      <div class="table-wrap" tabindex="0" aria-label="工资记录表格，可横向滚动"><table><thead><tr><th scope="col">工资月份</th><th scope="col">到账日期</th><th scope="col">类型</th><th scope="col">来源</th><th scope="col">税前金额</th><th scope="col">实收金额</th><th scope="col">备注</th><th scope="col">操作</th></tr></thead><tbody id="salaryRows"></tbody></table></div>
+    </section>
+    </div>
+  </section>
+  <div id="ledgerPage" hidden>
+  <header class="intro"><div><div class="overline" id="pageEyebrow">PERSONAL ASSETS</div><h1 id="pageTitle">我的设备资产</h1><p class="sub" id="pageDescription">追踪设备用了多久，以及价值如何随时间变化。</p></div><button id="add" class="button primary"><span data-icon="plus"></span>添加设备</button></header>
+  <div class="demo" id="demo"><span><b>示例模式</b> · 当前展示 5 台示例设备，方便预览折旧效果。</span><button class="button" id="start">使用我的账本 <span data-icon="arrow"></span></button></div>
+  <div id="overviewPage"><div class="metrics" id="metrics" aria-label="资产指标"></div>
+  <section class="analytics" aria-label="资产分析">
+    <article class="panel trend">
+      <div class="panel-top"><div><h2>资产价值趋势</h2><p class="sub">各日期仍持有的设备合计估算余值</p></div><div class="seg" id="ranges" aria-label="趋势范围"><button data-range="6" aria-pressed="true">近 6 月</button><button data-range="12" aria-pressed="false">近 1 年</button><button data-range="next" aria-pressed="false">未来 1 年</button></div></div>
+      <div class="chart" id="chart"></div><div class="forecast-summary" id="forecastSummary" hidden><strong id="forecastChange"></strong><span>按当前持有设备估算 · 金额取整至元</span></div><div class="legend"><span><i></i>历史估算</span><span><i></i>未来预测</span></div>
+    </article>
+    <article class="panel mix"><h2>资产构成</h2><p class="sub">按类别查看持有设备的估算余值</p><div class="mix-body"><div class="donut" id="donut"><div><b id="mixTotal">¥0</b><small>总估算余值</small></div></div><div class="mix-list" id="mixList"></div></div><div class="mix-note"><span id="mixNote"></span><span class="mix-rounding" id="mixRounding">比例经四舍五入。</span></div></article>
+  </section>
+  <div class="panel list-top"><div><h2>设备清单</h2><p class="sub">查看每台设备的购入、折旧和处置记录。</p></div><a class="button" href="#devices">打开设备清单 <span data-icon="arrow"></span></a></div></div>
+  <section class="panel list" id="devicesPage" hidden>
+    <div class="list-top"><div><h2>资产登记表</h2><p class="sub" id="listCaption"></p></div><div class="export-actions"><button class="button" id="exportXlsx">导出 Excel</button><button class="button" id="exportPdf">导出 PDF</button></div></div>
+    <div class="ledger-tools"><div class="filters">
+      <input class="filter" type="search" id="search" placeholder="搜索名称、编号、品牌…" aria-label="搜索名称、资产编号或品牌">
+      <select class="filter" id="category" aria-label="筛选分类"><option value="">全部分类</option></select>
+      <select class="filter" id="statusFilter" aria-label="筛选设备状态"><option value="">全部状态</option><option value="active">在用</option><option value="maintenance">维修中</option><option value="paused">暂停使用</option><option value="disposed">已处置</option></select>
+      <select class="filter" id="sort" aria-label="排序"><option value="recent">最近购入</option><option value="old">使用最久</option><option value="value">余值最高</option><option value="loss">折旧最多</option></select>
+    </div><span class="form-hint">导出当前筛选结果</span></div>
+    <div class="table-wrap" tabindex="0" aria-label="设备资产表格，可横向滚动"><table><thead><tr><th scope="col">设备 / 资产编号</th><th scope="col">品牌</th><th scope="col">购入信息</th><th scope="col">价格明细</th><th scope="col">状态 / 处置</th><th scope="col">持有时长</th><th scope="col">估算余值</th><th scope="col">累计折旧</th><th scope="col">操作</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </section>
+  <div class="foot">所有金额以人民币计。估值按你设定的使用年限和残值计算，实际二手成交价可能不同。 <button id="methodButton">查看计算方式</button><br><span id="storageWarning" hidden>浏览器无法保存数据，请在关闭网页前导出备份。</span></div>
+  </div>
+  <p class="workspace-foot" id="workspaceWarning" role="status" hidden>浏览器无法读取或保存工作台记录，本次修改仅保留在当前页面。</p>
+</main>
+</div>
+<dialog id="themeEditor" aria-labelledby="themeEditorTitle">
+  <form id="themeForm">
+    <div class="modal-top"><div><h2 id="themeEditorTitle">主题颜色</h2><p class="sub">选择预设或自选颜色，保存后应用到整个工作台。</p></div><button type="button" class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+    <div id="themePresets" class="theme-presets" role="group" aria-label="主题预设"></div>
+    <div class="theme-custom"><label>自选颜色 <input type="color" id="themeColor" value="#1c4837"></label><output id="themeCode" for="themeColor"></output></div>
+    <div class="theme-preview" aria-hidden="true"><div class="theme-preview-banner">工作台预览 <span class="theme-preview-accent">强调色</span></div><div class="form-hint">背景 · 按钮 · 图表</div></div>
+    <div class="modal-foot"><button type="button" class="button" data-close>取消</button><button class="button primary">保存主题</button></div>
+  </form>
+</dialog>
+<dialog id="nameEditor" aria-labelledby="nameEditorTitle">
+  <form id="nameForm">
+    <div class="modal-top"><h2 id="nameEditorTitle">编辑工作台名称</h2><button type="button" class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+    <div class="form-grid">
+      <label class="wide">主标题<input class="field" id="nameHeading" maxlength="40" required></label>
+      <label class="wide">上方小标题（选填）<input class="field" id="nameEyebrow" maxlength="40"></label>
+    </div>
+    <div class="modal-foot"><button type="button" class="button" data-close>取消</button><button class="button primary">保存名称</button></div>
+  </form>
+</dialog>
+<dialog id="salaryEditor" aria-labelledby="salaryEditorTitle">
+  <form id="salaryForm">
+    <div class="modal-top"><h2 id="salaryEditorTitle">登记收入</h2><button type="button" class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+    <div class="form-grid">
+      <label>工资月份<input class="field" name="month" type="month" placeholder="YYYY-MM" min="1900-01" max="9999-12" required></label>
+      <label>到账日期<input class="field" name="received" type="date" min="1900-01-01" required></label>
+      <label>收入类型<select class="field" name="kind"><option>工资</option><option>奖金</option><option>补贴</option><option>其他</option></select></label>
+      <label>来源（选填）<input class="field" name="source" maxlength="80" placeholder="例如 公司名称"></label>
+      <label>税前金额（元，选填）<input class="field" name="gross" type="number" min="0" max="999999999" step="0.01"></label>
+      <label>实收金额（元）<input class="field" name="net" type="number" min="0" max="999999999" step="0.01" required></label>
+      <label class="wide">备注（选填）<input class="field" name="note" maxlength="180"></label>
+    </div>
+    <p id="salarySaveError" class="salary-error" role="alert"></p>
+    <div class="modal-foot"><button type="button" id="salaryDelete" class="button danger" hidden>删除记录</button><button type="button" class="button" data-close>取消</button><button id="salarySave" class="button primary">保存收入</button></div>
+  </form>
+</dialog>
+<dialog id="workspaceEditor" aria-labelledby="workspaceEditorTitle">
+  <form class="workspace-form" id="workspaceForm">
+    <div class="modal-top"><h2 id="workspaceEditorTitle"></h2><button type="button" class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+    <div class="form-grid">
+      <label class="wide">标题<input class="field" id="workspaceTitle" name="title" maxlength="100" required></label>
+      <label class="wide" id="workspaceDueField">截止日期（选填）<input class="field" name="due" id="workspaceDue" type="date" min="1900-01-01" max="9999-12-31"></label>
+      <label class="wide" id="workspaceBodyField">内容<textarea class="field" name="body" id="workspaceBody" maxlength="4000" placeholder="写下想记住的内容"></textarea></label>
+    </div>
+    <div class="modal-foot"><button type="button" class="button danger" id="workspaceDelete" hidden>删除</button><button type="button" class="button" data-close>取消</button><button class="button primary">保存</button></div>
+  </form>
+</dialog>
+<dialog class="editor-wide" id="editor" aria-labelledby="editorTitle">
+<form id="form">
+  <div class="modal-top"><div><h2 id="editorTitle">添加设备</h2><p class="sub">记录设备来源、购入成本、折旧与处置。</p></div><button type="button" class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+  <div class="form-grid">
+    <div class="wide form-hint">资产编号 <strong class="asset-number" id="editorNumber"></strong></div>
+    <label class="wide">设备名称<input class="field" id="name" name="name" maxlength="80" required placeholder="例如 我的笔记本电脑"></label>
+    <label>设备类别<select class="field" id="editCategory" name="category"></select></label>
+    <label>品牌<input class="field" name="brand" maxlength="60" placeholder="例如 Apple、索尼"></label>
+    <h3 class="wide section-title">购入信息</h3>
+    <label>获取方式<select class="field" id="acquireMethod" name="acquireMethod"><option value="">未登记</option><option>自购</option><option>二手购入</option><option>以旧换新</option><option>获赠</option><option>其他</option></select></label>
+    <label>购入平台或来源<input class="field" name="acquirePlatform" list="platformOptions" maxlength="80" placeholder="选择常用平台或自行填写"><datalist id="platformOptions"><option>品牌官网</option><option>京东</option><option>天猫</option><option>淘宝</option><option>拼多多</option><option>闲鱼</option><option>转转</option><option>线下门店</option></datalist></label>
+    <label>购入日期<input class="field" type="date" name="date" id="date" min="1900-01-01" required></label>
+    <label>原价（元）<input class="field" type="number" id="original" name="original" min="0" max="999999999" step="0.01" required placeholder="5999.00"></label>
+    <label>优惠（元）<input class="field" type="number" id="discount" name="discount" min="0" max="999999999" step="0.01" value="0"></label>
+    <label>国补（元）<input class="field" type="number" id="subsidy" name="subsidy" min="0" max="999999999" step="0.01" value="0"></label>
+    <label>以旧换新抵扣（元）<input class="field" type="number" id="tradeCredit" name="tradeCredit" min="0" max="999999999" step="0.01" value="0"></label>
+    <label class="wide" id="tradeField" hidden>换出的旧设备<select class="field" name="tradeFrom" id="tradeFrom"></select><span class="form-hint">先在旧设备的卡片中登记处置，并选择「以旧换新」。每台旧设备只能关联一台新设备。</span></label>
+    <div class="wide cost-preview"><span>实付金额 · 折旧计算基数</span><strong id="paidPreview">—</strong></div>
+    <h3 class="wide section-title">折旧与保修</h3>
+    <label>预计残值（元）<input class="field" type="number" name="salvage" min="0" max="999999999" step="0.01" required value="0"></label>
+    <label>预计使用（月）<input class="field" type="number" name="life" min="1" max="600" step="1" required value="36"></label>
+    <label>保修到期（选填）<input class="field" type="date" name="warranty" min="1900-01-01" max="9999-12-31"></label>
+    <h3 class="wide section-title">处置记录</h3>
+    <label>处置日期（选填）<input class="field" type="date" name="disposedOn" id="disposedOn" min="1900-01-01"></label>
+    <label>处置方式<select class="field" name="disposeMethod" id="disposeMethod"><option value="">未登记</option><option>二手转卖</option><option>以旧换新</option><option>报废</option><option>转赠</option><option>其他</option></select></label>
+    <label id="saleChannelField" hidden>二手转卖渠道<select class="field" name="saleChannel" id="saleChannel"><option value="">请选择</option><option>品牌官网</option><option>转转</option><option>闲鱼</option><option>爱回收</option><option>线下交易</option><option>其他</option></select></label>
+    <label id="saleProceedsField" hidden>转卖收入（元，选填）<input class="field" type="number" name="saleProceeds" min="0" max="999999999" step="0.01" placeholder="例如 1200.00"></label>
+    <label class="wide">备注（选填）<input class="field" name="note" maxlength="180" placeholder="例如 配件、型号或使用情况"></label>
+  </div>
+  <div class="modal-foot"><button type="button" id="remove" class="button danger" hidden>删除设备</button><button type="button" id="editorCancel" class="button" data-close>取消</button><button type="button" id="editorBack" class="button" data-close hidden>返回资产卡片</button><button class="button primary">保存设备</button></div>
+</form>
+</dialog>
+<dialog id="detail" aria-labelledby="detailTitle">
+  <div class="modal-top"><div><h2 id="detailTitle"></h2><p class="sub" id="detailSubtitle"></p></div><button class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+  <div class="card-actions"><button class="button primary" id="activityDetail">维修 / 暂停</button><button class="button" id="disposeDetail">登记处置</button><button class="button" id="editDetail">编辑设备</button></div>
+  <div id="detailBody"></div>
+</dialog>
+<dialog id="activity" aria-labelledby="activityTitle">
+  <form id="activityForm">
+    <div class="modal-top"><div><h2 id="activityTitle">登记维修或暂停</h2><p class="sub" id="activitySubtitle"></p></div><button type="button" class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+    <div class="form-grid">
+      <label id="activityKindField">类型<select class="field" name="kind"><option value="maintenance">维修</option><option value="paused">暂停使用</option></select></label>
+      <label id="activityStartField">开始日期<input class="field" name="start" type="date" required></label>
+      <label><span id="activityEndLabel">恢复日期（选填）</span><input class="field" name="end" type="date"><span class="form-hint" id="activityEndHint">留空会将设备标记为维修中或暂停使用。</span></label>
+      <label id="activityCostField">维修费用（元，选填）<input class="field" name="expense" type="number" min="0" max="999999999" step="0.01"></label>
+      <label class="wide">说明（选填）<input class="field" name="note" maxlength="180" placeholder="例如 更换电池、暂时停用"></label>
+    </div>
+    <div class="modal-foot"><button type="button" class="button" data-close>返回资产卡片</button><button class="button primary" id="saveActivity">保存记录</button></div>
+  </form>
+</dialog>
+<dialog id="backup" aria-labelledby="backupTitle">
+  <div class="modal-top"><h2 id="backupTitle">数据备份</h2><button class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+  <div class="guide"><p>设备数据保存在当前浏览器。换设备或清理浏览器数据前，可以导出备份。</p><p><strong>JSON</strong> 可导入恢复全部记录。<strong>CSV</strong> 可用表格软件查看当前估值快照。</p><p id="backupNote"></p></div>
+  <div class="modal-foot"><button class="button" id="exportCsv">导出 CSV</button><button class="button" id="exportJson">导出 JSON</button><button class="button primary" id="importButton">导入备份</button><input type="file" id="importFile" accept=".json,application/json" hidden></div>
+</dialog>
+<dialog id="method" aria-labelledby="methodTitle">
+  <div class="modal-top"><h2 id="methodTitle">折旧如何计算</h2><button class="icon-button" data-close aria-label="关闭"><span data-icon="x"></span></button></div>
+  <div class="guide"><p><strong>实付金额</strong> = 原价 − 优惠 − 国补 − 以旧换新抵扣。折旧以实付金额为基数。</p><p><strong>估算余值</strong> = 实付金额 −（实付金额 − 预计残值）× 已消耗的使用年限比例。网站按天计算直线折旧，到达预计使用年限后，余值维持在设定的残值。</p><p><strong>累计折旧</strong> = 实付金额 − 当前估算余值。<strong>日均购入成本</strong> = 实付金额 ÷ 持有天数。</p><p>趋势图回算当前清单里每台设备在各日期的价值。购入前和处置当日起均按 ¥0 计入持有价值。处置当日的估算余值和累计折旧保留在资产卡片中。维修和暂停期间继续按日折旧，维修费用单独记录。</p></div>
+  <div class="modal-foot"><button class="button primary" data-close>知道了</button></div>
+</dialog>
+<div class="notice" id="notice" role="status" hidden></div>
+<section class="print-report" id="printReport" aria-label="设备清单打印版"></section>
+<script>
+
+"use strict";
+const $ = id => document.getElementById(id);
+const categories = [
+  ["电脑","laptop","#32674e"],["手机","phone","#72a28a"],["平板","tablet","#a2bb65"],
+  ["影音","audio","#d0a74f"],["摄影","camera","#758baf"],["手表","watch","#b77287"],["外设","keyboard","#937eaa"],["其他","box","#9a8880"]
+];
+const icons = {
+  settings:'<path d="m10 3-.6 2.3-2.1 1.2L5 6l-2 3.4 1.7 1.7v2.4L3 15.2l2 3.4 2.3-.5 2.1 1.2.6 2.3h4l.6-2.3 2.1-1.2 2.3.5 2-3.4-1.7-1.7v-2.4L21 9.4 19 6l-2.3.5-2.1-1.2L14 3z"/><circle cx="12" cy="12.3" r="3"/>',
+  palette:'<path d="M12 3a9 9 0 0 0 0 18h1.5a2 2 0 0 0 1.4-3.4l-.3-.3a1.4 1.4 0 0 1 1-2.3H18a3 3 0 0 0 3-3 9 9 0 0 0-9-9Z"/><path d="M7.5 12h.1M9 7.5h.1m4.7-.5h.1m3.6 3.5h.1" stroke-width="2.4"/>',
+  checklist:'<rect x="4" y="4" width="16" height="16" rx="2"/><path d="m7 10 1.5 1.5L11 9m2 2h4M7 15h10"/>',
+  note:'<path d="M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8"/>',
+  brand:'<path d="M3 8h18v12H3zM7 8V4h10v4M3 12h18m-11 0v2h4v-2"/>',
+  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  laptop:'<rect x="5" y="4" width="14" height="12" rx="2"/><path d="M3 16h18l1 4H2z"/>',
+  phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+  watch:'<rect x="6" y="7" width="12" height="10" rx="3"/><path d="m8 7 1-5h6l1 5M8 17l1 5h6l1-5m-4-7v2l2 1m4-1h2"/>',
+  tablet:'<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M11 18h2"/>',
+  audio:'<path d="M3 14v-2a9 9 0 0 1 18 0v2"/><rect x="3" y="12" width="5" height="8" rx="2"/><rect x="16" y="12" width="5" height="8" rx="2"/>',
+  camera:'<path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/>',
+  keyboard:'<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h1m4 0h1m4 0h1M6 14h12"/>',
+  box:'<path d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4m-9 4v10"/>',
+  archive:'<path d="M4 8v12h16V8M3 4h18v4H3zM9 12h6"/>',
+  lock:'<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', arrow:'<path d="M4 12h15m-6-6 6 6-6 6"/>',
+  trend:'<path d="M3 5v15h18M6 15l5-5 4 3 5-6"/>',
+  wallet:'<rect x="3" y="5" width="18" height="15" rx="2"/><path d="M21 10h-6v5h6m-3-2.5h.1"/>',
+  loss:'<path d="m3 6 7 7 4-4 7 7m-6 0h6v-6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>',
+  x:'<path d="m6 6 12 12M18 6 6 18"/>',
+  edit:'<path d="m4 16-1 5 5-1L20 8l-4-4zM14 6l4 4"/>'
+};
+const icon = name => '<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[name]+'</svg>';
+document.querySelectorAll("[data-icon]").forEach(el => { el.innerHTML = icon(el.dataset.icon); });
+const escape = str => String(str).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]);
+const DAY = 86400000;
+const storageKey = "device-ledger.v1";
+const toDay = value => Date.parse(value+"T00:00:00Z") / DAY;
+const iso = day => new Date(day*DAY).toISOString().slice(0,10);
+const getToday = () => {
+  const local = new Date();
+  return Date.UTC(local.getFullYear(),local.getMonth(),local.getDate()) / DAY;
+};
+let today = getToday();
+const addMonths = (day, months) => {
+  const date = new Date(day*DAY);
+  const y = date.getUTCFullYear();
+  const m = date.getUTCMonth() + months;
+  const maxDay = new Date(Date.UTC(y,m+1,0)).getUTCDate();
+  return Date.UTC(y,m,Math.min(date.getUTCDate(),maxDay)) / DAY;
+};
+function age(start,end) {
+  const a = new Date(start*DAY), b = new Date(end*DAY);
+  let months = (b.getUTCFullYear()-a.getUTCFullYear())*12 + b.getUTCMonth()-a.getUTCMonth();
+  if (addMonths(start,months)>end) months--;
+  const days = end-addMonths(start,months);
+  return [months>=12 ? Math.floor(months/12)+" 年" : "", months%12 ? months%12+" 个月" : "", days || !months ? days+" 天" : ""].filter(Boolean).join(" ");
+}
+function valueAt(record, day) {
+  const purchase = toDay(record.date);
+  if (day<purchase) return 0;
+  const end = addMonths(purchase,record.life);
+  const elapsed = Math.min(1,(day-purchase)/(end-purchase));
+  return Math.round(record.cost-(record.cost-record.salvage)*elapsed);
+}
+const assetNumber = number => "FA-"+String(number).padStart(4,"0");
+const isDisposed = (record,day=today) => Boolean(record.disposedOn && toDay(record.disposedOn)<=day);
+const recordDay = record => isDisposed(record) ? toDay(record.disposedOn) : today;
+const recordValue = record => valueAt(record,recordDay(record));
+const daysUsed = record => Math.max(0,recordDay(record)-toDay(record.date));
+const heldValueAt = (record,day) => isDisposed(record,day) ? 0 : valueAt(record,day);
+const activityLabels={maintenance:"维修",paused:"暂停使用"};
+const statusLabels={active:"在用",maintenance:"维修中",paused:"暂停使用",disposed:"已处置"};
+function openPeriod(record) {
+  const latest=record.activity.at(-1);
+  return latest && !latest.end ? latest : null;
+}
+const statusOf=record=>isDisposed(record)?"disposed":openPeriod(record)?.kind ?? "active";
+const statusBadge=record=>{
+  const status=statusOf(record);
+  return '<span class="status '+status+'">'+statusLabels[status]+'</span>';
+};
+function activityTotals(record) {
+  return record.activity.reduce((total,entry)=>{
+    total.days+=toDay(entry.end || iso(recordDay(record)))-toDay(entry.start);
+    if (entry.kind==="maintenance") total.repairs++;
+    total.expense+=entry.expense ?? 0;
+    return total;
+  },{days:0,repairs:0,expense:0});
+}
+const money = new Intl.NumberFormat("zh-CN",{style:"currency",currency:"CNY",minimumFractionDigits:0,maximumFractionDigits:2});
+const yuan = cents => money.format(cents/100);
+const moneyToCent = new Intl.NumberFormat("zh-CN",{style:"currency",currency:"CNY",minimumFractionDigits:2,maximumFractionDigits:2});
+const moneyToYuan = new Intl.NumberFormat("zh-CN",{style:"currency",currency:"CNY",maximumFractionDigits:0});
+const yuanWithCents = cents => moneyToCent.format(cents/100);
+const yuanRounded = cents => moneyToYuan.format(cents/100);
+const percent = ratio => Math.round(ratio*100)+"%";
+const acquisitionMethods=["","自购","二手购入","以旧换新","获赠","其他"];
+const disposalMethods=["","二手转卖","以旧换新","报废","转赠","其他"];
+const saleChannels=["","品牌官网","转转","闲鱼","爱回收","线下交易","其他"];
+const priceKeys=["original","discount","subsidy","tradeCredit"];
+const emptyPurchase = cost => ({brand:"",acquireMethod:"",acquirePlatform:"",original:cost,discount:0,subsidy:0,
+  tradeCredit:0,tradeFrom:"",disposeMethod:"",saleChannel:"",saleProceeds:null,activity:[]});
+const paidAmount = r => r.original-r.discount-r.subsidy-r.tradeCredit;
+const needsTrade = r => r.tradeCredit>0 || r.acquireMethod==="以旧换新";
+const canTrade = r => isDisposed(r) && r.disposeMethod==="以旧换新";
+const sample = [
+  ["MacBook Pro 14","电脑",23,1299900,260000,60,36,"主要工作设备"],
+  ["iPhone 16 Pro","手机",14,799900,180000,36,12,"日常使用"],
+  ["Sony α6400","摄影",31,629900,160000,72,24,"含套机镜头"],
+  ["iPad Air","平板",10,479900,80000,48,12,"阅读和手写笔记"],
+  ["AirPods Pro 2","影音",22,169900,10000,30,12,"通勤使用"]
+].map(([name,category,ago,cost,salvage,life,cover,note],i) => {
+  const date = addMonths(today,-ago)-[11,7,15,4,9][i];
+  const discount=[100000,40000,0,20000,0][i], subsidy=i===3?30000:0, tradeCredit=i===3?20000:0;
+  return {...emptyPurchase(cost),id:"sample-"+i,assetNo:assetNumber(i+1),name,category,date:iso(date),cost,salvage,life,warranty:iso(addMonths(date,cover)),note,
+    brand:i===2?"索尼":"Apple",acquirePlatform:["品牌官网","京东","线下门店","天猫","京东"][i],acquireMethod:i===3?"以旧换新":"自购",
+    original:cost+discount+subsidy+tradeCredit,discount,subsidy,tradeCredit,tradeFrom:i===3?"sample-4":"",
+    disposedOn:i===4?iso(addMonths(today,-10)-4):"",disposeMethod:i===4?"以旧换新":""};
+});
+const validDate = value => typeof value==="string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && value>="1900-01-01" && Number.isFinite(toDay(value)) && iso(toDay(value))===value;
+const validText = (value, limit) => typeof value==="string" && value.length<=limit;
+const validBaseRecord = r => r && typeof r.id==="string" && /^[\w-]{1,100}$/.test(r.id) &&
+  validText(r.name,80) && r.name.trim() && categories.some(([name])=>name===r.category) &&
+  validDate(r.date) && Number.isInteger(r.cost) && r.cost>=0 && r.cost<=99999999900 &&
+  Number.isInteger(r.salvage) && r.salvage>=0 && r.salvage<=r.cost && Number.isInteger(r.life) && r.life>=1 && r.life<=600 &&
+  (r.warranty==="" || (validDate(r.warranty) && r.warranty>=r.date)) && validText(r.note,180);
+const validNumberedRecord = r => validBaseRecord(r) && typeof r.assetNo==="string" &&
+  /^FA-\d{4,15}$/.test(r.assetNo) && r.assetNo===assetNumber(Number(r.assetNo.slice(3))) && Number(r.assetNo.slice(3))>0 &&
+  (r.disposedOn==="" || (validDate(r.disposedOn) && r.disposedOn>=r.date));
+const validMoney = value => Number.isInteger(value) && value>=0 && value<=99999999900;
+const validPurchaseRecord = r => validNumberedRecord(r) && validText(r.brand,60) && validText(r.acquirePlatform,80) &&
+  acquisitionMethods.includes(r.acquireMethod) && priceKeys.every(key=>validMoney(r[key])) && r.cost===paidAmount(r) &&
+  validText(r.tradeFrom,100) && Boolean(r.tradeFrom)===needsTrade(r) && disposalMethods.includes(r.disposeMethod) &&
+  (!r.disposeMethod || Boolean(r.disposedOn)) &&
+  (r.disposeMethod==="二手转卖" ? Boolean(r.saleChannel) && saleChannels.includes(r.saleChannel) &&
+    (r.saleProceeds===null || validMoney(r.saleProceeds)) : r.saleChannel==="" && r.saleProceeds===null);
+function validActivity(record) {
+  if (!Array.isArray(record.activity) || record.activity.length>500) return false;
+  let earliest=record.date;
+  const latest=record.disposedOn || iso(today);
+  return record.activity.every((entry,i)=>{
+    if (!entry || !Object.hasOwn(activityLabels,entry.kind) || !validDate(entry.start) || entry.start<earliest ||
+      entry.start>latest || !validText(entry.note,180) ||
+      (entry.expense!==null && (entry.kind!=="maintenance" || !validMoney(entry.expense)))) return false;
+    if (entry.end==="") return !record.disposedOn && i===record.activity.length-1;
+    if (!validDate(entry.end) || entry.end<entry.start || entry.end>latest) return false;
+    earliest=entry.end;
+    return true;
+  });
+}
+const validRecord = r => validPurchaseRecord(r) && validActivity(r);
+function validTradeLinks(list) {
+  const byId=new Map(list.map(r=>[r.id,r]));
+  const claimed=new Set();
+  for (const record of list) {
+    if (!record.tradeFrom) continue;
+    const old=byId.get(record.tradeFrom);
+    if (!old || old===record || old.date>record.date || !canTrade(old) || claimed.has(old.id)) return false;
+    claimed.add(old.id);
+  }
+  // A device can be traded again later, so validate chains as well as individual links.
+  const checked=new Set();
+  for (const record of list) {
+    const chain=new Set();
+    let current=record;
+    while (current?.tradeFrom && !checked.has(current.id)) {
+      if (chain.has(current.id)) return false;
+      chain.add(current.id);
+      current=byId.get(current.tradeFrom);
+    }
+    for (const id of chain) checked.add(id);
+  }
+  return true;
+}
+function readLedger(data,existing=[],next=1) {
+  const legacy=Array.isArray(data) || data?.version===1;
+  const list=Array.isArray(data) ? data : data?.devices;
+  if (!Array.isArray(list) || list.length>5000 || !list.every(legacy?validBaseRecord:data.version===2?validNumberedRecord:data.version===3?validPurchaseRecord:validRecord) || new Set(list.map(r=>r.id)).size!==list.length) {
+    throw new Error("invalid records");
+  }
+  if (legacy) {
+    const known=new Map(existing.map(r=>[r.id,r.assetNo]));
+    const devices=list.map(r=>({...r,...emptyPurchase(r.cost),assetNo:known.get(r.id) ?? assetNumber(next++),disposedOn:""}));
+    return {version:4,devices,nextAssetNo:next};
+  }
+  const maxNumber=list.reduce((max,r)=>Math.max(max,Number(r.assetNo.slice(3))),0);
+  if (![2,3,4].includes(data.version) || !Number.isSafeInteger(data.nextAssetNo) || data.nextAssetNo<=maxNumber ||
+    new Set(list.map(r=>r.assetNo)).size!==list.length) throw new Error("invalid asset numbers");
+  const devices=data.version===2 ? list.map(r=>({...r,...emptyPurchase(r.cost)})) :
+    data.version===3 ? list.map(r=>({...r,activity:[]})) : list;
+  if (!validTradeLinks(devices)) throw new Error("invalid trade links");
+  return {version:4,devices,nextAssetNo:data.nextAssetNo};
+}
+let personal = null;
+let nextAssetNo = 1;
+try {
+  const saved = localStorage.getItem(storageKey);
+  if (saved!==null) {
+    const ledger = readLedger(JSON.parse(saved));
+    personal = ledger.devices;
+    nextAssetNo = ledger.nextAssetNo;
+  }
+} catch {
+  $("storageWarning").hidden = false;
+}
+let range = "6";
+let detailId = null;
+let editId = null;
+let activityId = null;
+let noticeTimer;
+const records = () => personal ?? sample;
+function notify(message) {
+  clearTimeout(noticeTimer);
+  $("notice").textContent = message;
+  $("notice").hidden = false;
+  noticeTimer = setTimeout(() => { $("notice").hidden = true; },4200);
+}
+function save(list,message) {
+  personal = list;
+  let persisted = false;
+  try {
+    localStorage.setItem(storageKey,JSON.stringify({version:4,devices:list,nextAssetNo}));
+    $("storageWarning").hidden = true;
+    persisted = true;
+  } catch {
+    $("storageWarning").hidden = false;
+  }
+  render();
+  notify(persisted ? message : "本次修改仅保留在页面中，请导出备份。");
+}
+function renderMetrics(list) {
+  const held = list.filter(r=>!isDisposed(r));
+  const cost = held.reduce((total,r)=>total+r.cost,0);
+  const value = held.reduce((total,r)=>total+valueAt(r,today),0);
+  const disposedCount = list.length-held.length;
+  const inactiveCount = held.filter(r=>openPeriod(r)).length;
+  const data = [
+    ["当前估值",yuanWithCents(value),"按当前持有设备计算"+(cost?" · 保值率 "+percent(value/cost):""),"trend"],
+    ["购入总额",yuanWithCents(cost),"按当前持有设备的实付金额计算","wallet"],
+    ["已折旧",yuanWithCents(cost-value),"按当前持有设备计算"+(cost?" · 折旧率 "+percent((cost-value)/cost):""),"loss"],
+    ["已记录设备",list.length+" 台",(held.length-inactiveCount)+" 台在用 · "+inactiveCount+" 台维修或暂停 · "+disposedCount+" 台已处置","box"]
+  ];
+  $("metrics").innerHTML = data.map(([label,number,caption,symbol]) =>
+    '<article class="metric"><div class="metric-label">'+label+'<span>'+icon(symbol)+'</span></div><div class="number">'+number+'</div><div class="caption">'+caption+'</div></article>'
+  ).join("");
+}
+function renderMix(list) {
+  const groups = categories.map(([label,,color])=>({label,color,value:list.filter(r=>r.category===label).reduce((total,r)=>total+valueAt(r,today),0)})).filter(g=>g.value>0).sort((a,b)=>b.value-a.value);
+  const total = groups.reduce((sum,g)=>sum+g.value,0);
+  let cumulative = 0;
+  const stops = groups.map(group=>{
+    const from = cumulative;
+    cumulative += group.value/total;
+    return group.color+" "+(from*100)+"% "+(cumulative*100)+"%";
+  });
+  const displayTotal=yuanRounded(total);
+  $("mixTotal").textContent=displayTotal;
+  $("mixTotal").style.fontSize=displayTotal.length>10?"10px":"";
+  $("donut").title="总估算余值 "+yuanWithCents(total);
+  $("donut").style.background = total ? "conic-gradient("+stops.join(",")+")" : "";
+  $("mixList").innerHTML = groups.map(g=>'<div class="mix-item" title="'+yuan(g.value)+'"><i style="background:'+g.color+'"></i><span>'+g.label+'</span><b>'+percent(g.value/total)+'</b></div>').join("") || "暂无可分配的余值";
+  $("mixNote").textContent = groups.length ? groups[0].label+"占比最高，当前估算余值 "+yuan(groups[0].value)+"。" : "当前没有可计入构成的持有设备余值。";
+  $("mixRounding").hidden=!groups.length;
+}
+const shortDay = day => { const date=new Date(day*DAY); return (date.getUTCMonth()+1)+"/"+date.getUTCDate(); };
+const axisValue = cents => {
+  const amount = cents/100;
+  return amount>=1000000 ? "¥"+Number((amount/10000).toFixed(1))+"万" : amount>=1000 ? "¥"+Number((amount/1000).toFixed(1))+"k" : "¥"+Number(amount.toFixed(2));
+};
+function drawChart(container,list,start,end,description,valuation=valueAt,forecast=false) {
+  if (!list.length) {
+    container.innerHTML='<div class="empty" style="color:var(--theme-muted-on-dark,#c9ddd2)">添加第一台设备后，这里会显示价值趋势。</div>';
+    return;
+  }
+  const w = Math.max(280, Math.round(container.clientWidth) || 480), h=179, right=w-11, top=forecast?37:16, bottom=151;
+  const sampleDays = Array.from({length:65},(_,i)=>Math.round(start+(end-start)*i/64));
+  const eventDays = list.flatMap(r=>{
+    const purchase = toDay(r.date), finish = addMonths(purchase,r.life);
+    const disposal=toDay(r.disposedOn);
+    return [purchase-1,purchase,finish,disposal-1,disposal];
+  });
+  const days = [...new Set([...sampleDays,today,...eventDays].filter(day=>day>=start && day<=end))].sort((a,b)=>a-b);
+  const points = days.map(day=>({day,value:list.reduce((total,r)=>total+valuation(r,day),0)}));
+  const peak = points.reduce((max,p)=>Math.max(max,p.value),forecast?300:100);
+  const unit = 10**Math.floor(Math.log10(peak/3));
+  const max = 3*Math.ceil(peak/3/unit)*unit;
+  const format=forecast?yuanRounded:yuan;
+  const tickFormat=forecast?yuanRounded:axisValue;
+  const left=Math.max(57,tickFormat(max).length*6+10);
+  const x = day => left+(right-left)*(day-start)/(end-start);
+  const y = value => bottom-(bottom-top)*value/max;
+  const path = list => list.map((p,i)=>(i===0?"M":"L")+x(p.day).toFixed(1)+","+y(p.value).toFixed(1)).join(" ");
+  const ticks = [0,1,2,3].map(i=>max*i/3);
+  const grid = ticks.map(value=>'<path d="M'+left+' '+y(value)+'H'+right+'" stroke="#ffffff25" stroke-dasharray="3 4"/><text x="'+(left-7)+'" y="'+(y(value)+3)+'" text-anchor="end">'+tickFormat(value)+'</text>').join("");
+  const dates = Array.from({length:w<450?4:6},(_,i,arr)=>i);
+  const labels = dates.map(i=>{
+    const day=Math.round(start+(end-start)*i/(dates.length-1));
+    return '<text x="'+x(day)+'" y="172" text-anchor="'+(i===0?"start":i===dates.length-1?"end":"middle")+'">'+shortDay(day)+'</text>';
+  }).join("");
+  const old = points.filter(p=>p.day<=today), future=points.filter(p=>p.day>=today);
+  const current = points.find(p=>p.day===today);
+  const gradient = "area-"+container.id;
+  const first=points[0], last=points.at(-1);
+  const marker=point=>'<circle cx="'+x(point.day)+'" cy="'+y(point.value)+'" r="4.3" fill="var(--theme-accent,#c8ef76)" stroke="var(--theme-dark,#173e31)" stroke-width="1.4"/>';
+  const annotation=(point,label,labelX,anchor)=>'<text class="forecast-label" x="'+labelX+'" y="'+(y(point.value)-12)+'" text-anchor="'+anchor+'">'+escape(label)+'</text>';
+  let highlights=current?marker(current):"";
+  if (forecast) {
+    const startLabel="今天 "+format(first.value), endLabel="一年后约 "+format(last.value);
+    const startX=Math.min(left,Math.max(4,right-(startLabel.length+endLabel.length)*6.5-5));
+    highlights+=marker(last)+annotation(first,startLabel,startX,"start")+annotation(last,endLabel,right,"end");
+  }
+  const titleId = container.id+"-title";
+  container.innerHTML = '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-labelledby="'+titleId+'"><title id="'+titleId+'">'+escape(description+"。"+iso(start)+" "+format(first.value)+"，"+iso(end)+" "+format(last.value))+'</title><defs><linearGradient id="'+gradient+'" x2="0" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="var(--theme-accent,#c8ef76)" stop-opacity=".28"/><stop offset="1" stop-color="var(--theme-accent,#c8ef76)" stop-opacity="0"/></linearGradient></defs><g fill="var(--theme-muted-on-dark,#c0d7ca)" font-size="10">'+grid+labels+'</g><path d="'+path(points)+' L'+right+','+bottom+' H'+left+' Z" fill="url(#'+gradient+')"/><path d="'+path(old)+'" fill="none" stroke="var(--theme-accent,#c8ef76)" stroke-width="2.3" stroke-linejoin="round"/><path d="'+path(future)+'" fill="none" stroke="var(--theme-accent,#c8ef76)" stroke-width="2.3" stroke-dasharray="6 4" stroke-linejoin="round"/>'+highlights+'<g class="chart-cursor" visibility="hidden" stroke="var(--theme-muted-on-dark,#effadb)" stroke-width="1"><path d="M0 '+top+'V'+bottom+'" stroke-dasharray="3 4"/><circle r="4" fill="var(--theme-accent,#c8ef76)"/></g></svg><div class="tip" hidden></div>';
+  const svg = container.querySelector("svg"), tip = container.querySelector(".tip"), cursor=container.querySelector(".chart-cursor");
+  svg.onpointermove = event => {
+    const rect=svg.getBoundingClientRect();
+    const t=Math.max(0,Math.min(1,((event.clientX-rect.left)*w/rect.width-left)/(right-left)));
+    const day=Math.round(start+t*(end-start));
+    const value=list.reduce((total,r)=>total+valuation(r,day),0);
+    cursor.setAttribute("transform","translate("+x(day)+" 0)");
+    cursor.querySelector("circle").setAttribute("cy",y(value));
+    cursor.setAttribute("visibility","visible");
+    tip.textContent=iso(day)+" · "+format(value);
+    tip.hidden=false;
+    const half=tip.offsetWidth/2;
+    tip.style.left=Math.max(half,Math.min(rect.width-half,x(day)/w*rect.width))+"px";
+  };
+  svg.onpointerleave = () => { tip.hidden=true; cursor.setAttribute("visibility","hidden"); };
+  return {first:first.value,last:last.value};
+}
+function renderTrend() {
+  $("ranges").querySelectorAll("button").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.range===range)));
+  const forecast=range==="next";
+  const totals=drawChart($("chart"),records(),forecast?today:addMonths(today,-Number(range)),forecast?addMonths(today,12):today,"持有设备估算余值趋势",heldValueAt,forecast);
+  $("forecastSummary").hidden=!forecast || !totals;
+  if (forecast && totals) {
+    const reduction=totals.first-totals.last;
+    $("forecastChange").textContent=(reduction<0?"预计增加约 ":"预计减少约 ")+yuanRounded(Math.abs(reduction));
+  }
+}
+function filteredRecords() {
+  const list=records();
+  const category=$("category").value;
+  const query=$("search").value.trim().toLocaleLowerCase("zh-CN");
+  const status=$("statusFilter").value;
+  const filtered=list.filter(r=>(!category || r.category===category) &&
+    (!status || statusOf(r)===status) &&
+    (r.name+" "+r.assetNo+" "+r.brand+" "+r.category+" "+r.acquirePlatform+" "+r.note).toLocaleLowerCase("zh-CN").includes(query));
+  const sorters={
+    recent:(a,b)=>b.date.localeCompare(a.date),
+    old:(a,b)=>daysUsed(b)-daysUsed(a),
+    value:(a,b)=>recordValue(b)-recordValue(a),
+    loss:(a,b)=>(b.cost-recordValue(b))-(a.cost-recordValue(a))
+  };
+  return filtered.sort(sorters[$("sort").value]);
+}
+function renderList() {
+  const list=records(), filtered=filteredRecords();
+  $("listCaption").textContent=filtered.length===list.length ? "共 "+list.length+" 台设备 · 点击名称查看资产卡片" : "显示 "+filtered.length+" / "+list.length+" 台设备";
+  const byId=new Map(list.map(r=>[r.id,r]));
+  $("exportXlsx").disabled=!filtered.length;
+  $("exportPdf").disabled=!filtered.length;
+  $("rows").innerHTML=filtered.map(r=>{
+    const symbol=categories.find(c=>c[0]===r.category)[1];
+    const purchase=toDay(r.date), day=recordDay(r), value=recordValue(r), ratio=r.cost ? value/r.cost : 0;
+    const disposed=isDisposed(r), old=byId.get(r.tradeFrom), activity=openPeriod(r);
+    const minor = text => text ? '<span class="minor">'+escape(text)+'</span>' : '';
+    const acquisition=[r.acquireMethod,r.acquirePlatform].filter(Boolean).join(" · ");
+    const disposal=[r.disposeMethod,r.saleChannel].filter(Boolean).join(" · ");
+    const price='<strong>实付 '+yuan(r.cost)+'</strong>'+minor("原价 "+yuan(r.original))+
+      minor(r.discount?"优惠 −"+yuan(r.discount):"")+minor(r.subsidy?"国补 −"+yuan(r.subsidy):"")+
+      minor(r.tradeCredit?"换新抵扣 −"+yuan(r.tradeCredit):"")+minor(old?"旧设备 "+old.assetNo:"");
+    return '<tr><td><div class="device"><span class="device-icon">'+icon(symbol)+'</span><div><button data-detail="'+r.id+'">'+escape(r.name)+'</button><small><span class="asset-number">'+r.assetNo+'</span> · '+r.category+'</small></div></div></td><td>'+escape(r.brand || '—')+'</td><td>'+r.date+minor(acquisition)+'</td><td class="price-summary">'+price+'</td><td>'+statusBadge(r)+(disposed?minor(r.disposedOn)+minor(disposal)+minor(r.saleProceeds===null?'':'收入 '+yuan(r.saleProceeds)):minor(activity?activity.start+' 起':''))+'</td><td>'+age(purchase,Math.max(purchase,day))+'<span class="minor">'+daysUsed(r)+' 天</span></td><td><span class="amount">'+yuan(value)+'</span>'+(disposed?'<span class="minor">处置日估值</span>':'<span class="progress" title="保值率 '+percent(ratio)+'"><i style="width:'+percent(ratio)+'"></i></span>')+'</td><td>'+yuan(r.cost-value)+'</td><td><div class="row-actions"><button class="button row-manage" data-detail="'+r.id+'" aria-label="'+(personal===null?"查看 ":"管理 ")+escape(r.name)+'">'+(personal===null?"查看":"管理")+'</button>'+(personal===null?'':'<button class="icon-button" data-edit="'+r.id+'" aria-label="编辑 '+escape(r.name)+'">'+icon("edit")+'</button>')+'</div></td></tr>';
+  }).join("") || '<tr><td colspan="9" class="empty">'+(list.length ? "没有符合筛选条件的设备。<br><button class='button' data-clear>清除筛选</button>" : "账本还是空的。<br><button class='button' data-add>添加第一台设备</button>")+'</td></tr>';
+}
+const pageLabels={home:"首页",tasks:"工作待办",notes:"随手记",salary:"工资收入",settings:"设置",overview:"设备台账 / 资产总览",devices:"设备台账 / 设备清单"};
+function currentPage() {
+  const page=location.hash.slice(1);
+  return Object.hasOwn(pageLabels,page)?page:"home";
+}
+function renderPage() {
+  const page=currentPage();
+  if (page!=="salary") lockSalary();
+  const ledgerPage=page==="overview" || page==="devices";
+  const deviceList=page==="devices";
+  for (const section of ["home","tasks","notes","salary","settings"]) $(section+"Page").hidden=page!==section;
+  $("ledgerPage").hidden=$("ledgerNav").hidden=!ledgerPage;
+  $("ledgerNavLink").classList.toggle("active",ledgerPage);
+  $("overviewPage").hidden=deviceList;
+  $("devicesPage").hidden=!deviceList;
+  $("breadcrumb").textContent=pageLabels[page];
+  renderWorkspaceName(page);
+  $("pageEyebrow").textContent=deviceList?"ASSET REGISTER":"PERSONAL ASSETS";
+  $("pageTitle").textContent=deviceList?"设备清单":"我的设备资产";
+  $("pageDescription").textContent=deviceList?"查看设备的购入、折旧和处置记录。":"追踪设备用了多久，以及价值如何随时间变化。";
+  document.querySelectorAll("[data-nav]").forEach(link=>{
+    const current=link.dataset.nav===page;
+    link.classList.toggle("active",current);
+    if (current) link.setAttribute("aria-current","page");
+    else link.removeAttribute("aria-current");
+  });
+  if (page==="overview") renderTrend();
+  if (!ledgerPage) renderWorkspace(page);
+}
+window.addEventListener("hashchange",()=>{ renderPage(); window.scrollTo(0,0); });
+function render() {
+  $("today").textContent=new Intl.DateTimeFormat("zh-CN",{dateStyle:"long",timeZone:"UTC"}).format(new Date(today*DAY));
+  $("demo").hidden=personal!==null;
+  const list=records();
+  renderMetrics(list);
+  renderPage();
+  renderMix(list.filter(r=>!isDisposed(r)));
+  renderList();
+}
+function clearFilters() {
+  $("search").value="";
+  $("category").value="";
+  $("statusFilter").value="";
+}
+const amountFromInput = input => Math.round(Number(input.value)*100);
+function updateEditor() {
+  const input=$("form").elements;
+  const amounts=Object.fromEntries(priceKeys.map(key=>[key,amountFromInput(input[key])]));
+  const paid=paidAmount(amounts);
+  $("paidPreview").textContent=paid<0?"抵扣合计超过原价":yuan(paid);
+  const trade=needsTrade({...amounts,acquireMethod:input.acquireMethod.value});
+  $("tradeField").hidden=!trade;
+  input.tradeFrom.required=trade;
+  input.tradeFrom.disabled=!trade;
+  const resale=input.disposeMethod.value==="二手转卖";
+  $("saleChannelField").hidden=$("saleProceedsField").hidden=!resale;
+  input.saleChannel.required=resale;
+  input.saleChannel.disabled=input.saleProceeds.disabled=!resale;
+}
+function openEditor(record) {
+  editId=record?.id ?? null;
+  const form=$("form");
+  form.reset();
+  $("editorTitle").textContent=record ? "编辑设备" : "添加设备";
+  const fromCard=$("detail").open;
+  $("editorBack").hidden=!fromCard;
+  $("editorCancel").hidden=fromCard;
+  $("remove").hidden=!record;
+  $("editorNumber").textContent=record?.assetNo ?? "保存时自动生成";
+  $("date").max=iso(today);
+  const input=form.elements;
+  input.date.value=record?.date ?? iso(today);
+  for (const field of input) if (typeof field.setCustomValidity==="function") field.setCustomValidity("");
+  input.disposedOn.max=iso(today);
+  input.disposedOn.setCustomValidity("");
+  input.name.setCustomValidity("");
+  const list=personal ?? [];
+  const used=new Set(list.filter(r=>r.id!==editId).map(r=>r.tradeFrom));
+  input.tradeFrom.replaceChildren(new Option("请选择已按以旧换新处置的设备",""));
+  for (const old of list.filter(r=>canTrade(r) && r.id!==editId && !used.has(r.id))) {
+    input.tradeFrom.add(new Option(old.assetNo+" · "+old.name,old.id));
+  }
+  if (input.tradeFrom.options.length===1) input.tradeFrom.options[0].textContent="暂无可关联的旧设备";
+  if (record) {
+    for (const key of ["name","category","brand","acquireMethod","acquirePlatform","life","warranty","disposedOn","disposeMethod","saleChannel","tradeFrom","note"]) {
+      input[key].value=record[key];
+    }
+    for (const key of [...priceKeys,"salvage"]) input[key].value=record[key]/100;
+    input.saleProceeds.value=record.saleProceeds===null?"":record.saleProceeds/100;
+  }
+  updateEditor();
+  $("editor").showModal();
+  $("name").focus();
+}
+function renderDetail() {
+  const r=records().find(record=>record.id===detailId);
+  if (!r) return;
+  const start=toDay(r.date), end=addMonths(start,r.life), value=recordValue(r);
+  const disposed=isDisposed(r), day=recordDay(r), elapsed=daysUsed(r);
+  const warranty=r.warranty ? r.warranty+(r.warranty<iso(today)?" · 已过保":r.warranty===iso(today)?" · 今日到期":" · 剩余 "+(toDay(r.warranty)-today)+" 天") : "未登记";
+  $("detailTitle").textContent=r.name;
+  $("detailSubtitle").textContent="资产卡片 · "+r.assetNo+" · "+[r.brand,r.category].filter(Boolean).join(" / ")+(personal===null?" · 示例设备":"");
+  $("editDetail").hidden=personal===null;
+  $("disposeDetail").hidden=personal===null || disposed;
+  $("activityDetail").hidden=personal===null || disposed;
+  $("activityDetail").textContent=openPeriod(r)?"恢复使用":"维修 / 暂停";
+  const blocks=[
+    [disposed?"处置时已持有":"已持有",age(start,Math.max(start,day))],
+    [disposed?"处置日估算余值":"估算余值",yuan(value)],
+    ["累计折旧",yuan(r.cost-value)],
+    ["实付金额",yuan(r.cost)],
+    ["预计残值",yuan(r.salvage)],
+    ["日均购入成本",elapsed ? yuan(Math.round(r.cost/elapsed))+"/天" : "购入当天"]
+  ];
+  const list=records(), old=list.find(other=>other.id===r.tradeFrom), replacement=list.find(other=>other.tradeFrom===r.id);
+  const link = record => ({html:'<button class="card-link" data-related="'+record.id+'">'+escape(record.assetNo+" · "+record.name)+'</button>'});
+  const section=(title,fields)=>'<section class="card-section"><h3>'+title+'</h3><dl class="card-fields">'+
+    fields.map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+(value?.html ?? escape(value || "未登记"))+'</dd></div>').join("")+'</dl></section>';
+  const purchase=section("购入信息",[
+    ["获取方式",r.acquireMethod],["购入平台或来源",r.acquirePlatform],["原价",yuan(r.original)],["优惠",yuan(r.discount)],
+    ["国补",yuan(r.subsidy)],["以旧换新抵扣",yuan(r.tradeCredit)],["实付金额",yuan(r.cost)],...(old?[["换出的旧设备",link(old)]]:[])
+  ]);
+  const disposal=disposed?section("处置记录",[
+    ["处置日期",r.disposedOn],["处置方式",r.disposeMethod],
+    ...(r.disposeMethod==="二手转卖"?[["二手转卖渠道",r.saleChannel],["转卖收入",r.saleProceeds===null?"":yuan(r.saleProceeds)]]:[]),
+    ...(replacement?[["换入的新设备",link(replacement)],["换新抵扣",yuan(replacement.tradeCredit)]]:[])
+  ]):"";
+  const totals=activityTotals(r);
+  const activity=r.activity.length ? '<section class="card-section"><h3>维修与暂停记录</h3><p class="sub">累计维修 '+totals.repairs+' 次 · 暂停或维修共 '+totals.days+' 天 · 已登记维修费用 '+yuan(totals.expense)+'</p><ul class="activity-list">'+
+    [...r.activity].reverse().map(entry=>'<li><strong>'+activityLabels[entry.kind]+'</strong><small>'+entry.start+
+      (entry.end?' 至 '+entry.end:' · 进行中')+(entry.expense===null?'':' · '+yuan(entry.expense))+'</small>'+
+      (entry.note?'<p>'+escape(entry.note)+'</p>':'')+'</li>').join("")+'</ul></section>' :
+    '<section class="card-section"><h3>维修与暂停记录</h3><p class="sub">暂无记录。</p></section>';
+  $("detailBody").innerHTML=statusBadge(r)+'<p class="sub">购入日期 '+r.date+(disposed?' · 处置日期 '+r.disposedOn:'')+'</p><div class="details">'+blocks.map(([label,text])=>'<div>'+label+'<b>'+text+'</b></div>').join("")+'</div><p class="sub">预计使用 '+r.life+' 个月 · '+(disposed?'原预计折旧到期 ':'预计折旧到期 ')+iso(end)+'</p><p class="sub">保修 '+warranty+'</p>'+(r.note?'<p class="sub detail-note">备注 '+escape(r.note)+'</p>':'')+purchase+disposal+activity+(day===start && disposed?'':'<div class="trend panel detail-chart"><h3>单台设备价值曲线</h3><div id="singleChart" class="chart"></div><div class="legend"><span><i></i>历史估算</span>'+(disposed?'':'<span><i></i>未来预测</span>')+'</div></div>');
+  if ($("singleChart")) drawChart($("singleChart"),[r],start,disposed?day:Math.max(end,today),"单台设备估算余值");
+}
+function openDetail(id) {
+  detailId=id;
+  $("detail").showModal();
+  $("detail").scrollTop=0;
+  renderDetail();
+}
+categories.forEach(([label])=>{
+  $("category").add(new Option(label,label));
+  $("editCategory").add(new Option(label,label));
+});
+$("add").onclick=()=>openEditor();
+$("start").onclick=()=>{ clearFilters(); save([],"个人账本已开启，可以添加设备。"); openEditor(); };
+$("search").oninput=renderList;
+$("category").onchange=renderList;
+$("statusFilter").onchange=renderList;
+$("sort").onchange=renderList;
+$("ranges").onclick=event=>{
+  const button=event.target.closest("[data-range]");
+  if (button) { range=button.dataset.range; renderTrend(); }
+};
+$("rows").onclick=event=>{
+  const button=event.target.closest("button");
+  if (!button) return;
+  if (button.hasAttribute("data-clear")) { clearFilters(); renderList(); }
+  if (button.hasAttribute("data-add")) openEditor();
+  if (button.dataset.detail) openDetail(button.dataset.detail);
+  if (button.dataset.edit) {
+    if (personal===null) openDetail(button.dataset.edit);
+    else openEditor(personal.find(r=>r.id===button.dataset.edit));
+  }
+};
+document.querySelectorAll("[data-close]").forEach(button=>{ button.onclick=()=>button.closest("dialog").close(); });
+$("detailBody").onclick=event=>{
+  const button=event.target.closest("[data-related]");
+  if (button) {
+    detailId=button.dataset.related;
+    renderDetail();
+    $("detail").scrollTop=0;
+    $("detail").querySelector("[data-close]").focus();
+  }
+};
+$("editDetail").onclick=()=>{
+  const record=personal?.find(r=>r.id===detailId);
+  if (!record) return;
+  openEditor(record);
+};
+$("disposeDetail").onclick=()=>{
+  $("editDetail").onclick();
+  if ($("editor").open) {
+    $("editorTitle").textContent="登记处置";
+    $("disposedOn").value=iso(today);
+    $("disposeMethod").focus();
+  }
+};
+function openActivity(record) {
+  const form=$("activityForm"), fields=form.elements;
+  const current=openPeriod(record), resuming=Boolean(current);
+  activityId=record.id;
+  form.reset();
+  for (const field of fields) if (typeof field.setCustomValidity==="function") field.setCustomValidity("");
+  fields.kind.disabled=fields.start.disabled=resuming;
+  $("activityKindField").hidden=$("activityStartField").hidden=resuming;
+  fields.kind.value=current?.kind ?? "maintenance";
+  fields.start.min=record.activity.at(-1)?.end || record.date;
+  fields.start.max=fields.end.max=iso(today);
+  fields.start.value=current?.start ?? iso(today);
+  fields.end.min=fields.start.value;
+  fields.end.required=resuming;
+  fields.end.value=resuming?iso(today):"";
+  fields.expense.value=current?.expense==null?"":current.expense/100;
+  fields.note.value=current?.note ?? "";
+  $("activityTitle").textContent=resuming?"恢复使用":"登记维修或暂停";
+  $("activitySubtitle").textContent=record.assetNo+" · "+record.name+(resuming?" · "+activityLabels[current.kind]+"始于 "+current.start:"");
+  $("activityEndLabel").textContent=resuming?"恢复日期":"恢复日期（选填）";
+  $("activityEndHint").hidden=resuming;
+  $("saveActivity").textContent=resuming?"确认恢复":"保存记录";
+  updateActivityEditor();
+  $("activity").showModal();
+  fields[resuming?"end":"kind"].focus();
+}
+function updateActivityEditor() {
+  const fields=$("activityForm").elements;
+  fields.end.min=fields.start.value;
+  const isRepair=fields.kind.value==="maintenance";
+  $("activityCostField").hidden=fields.expense.disabled=!isRepair;
+}
+$("activityDetail").onclick=()=>{
+  const record=personal?.find(r=>r.id===detailId);
+  if (record && !isDisposed(record)) openActivity(record);
+};
+$("activityForm").oninput=event=>{
+  for (const field of event.currentTarget.elements) if (typeof field.setCustomValidity==="function") field.setCustomValidity("");
+  updateActivityEditor();
+};
+$("activityForm").onsubmit=event=>{
+  event.preventDefault();
+  const form=event.currentTarget, fields=form.elements;
+  const record=personal?.find(r=>r.id===activityId);
+  if (!record || isDisposed(record)) return;
+  const current=openPeriod(record);
+  if (!current && record.activity.length>=500) {
+    form.elements.start.setCustomValidity("每台设备最多保留 500 条记录。");
+    form.reportValidity();
+    return;
+  }
+  const entry={kind:current?.kind ?? fields.kind.value,start:current?.start ?? fields.start.value,
+    end:fields.end.value,note:fields.note.value.trim(),expense:fields.expense.disabled || fields.expense.value===""?null:amountFromInput(fields.expense)};
+  const activity=current?[...record.activity.slice(0,-1),entry]:[...record.activity,entry];
+  const updated={...record,activity};
+  if (!validActivity(updated)) {
+    fields.end.setCustomValidity("请核对维修或暂停的日期，记录不能重叠，恢复日期不能早于开始日期。");
+    form.reportValidity();
+    return;
+  }
+  $("activity").close();
+  save(personal.map(r=>r.id===record.id?updated:r),current?"设备已恢复使用。":"已保存"+activityLabels[entry.kind]+"记录。");
+  renderDetail();
+};
+$("form").oninput=event=>{
+  for (const field of event.currentTarget.elements) if (typeof field.setCustomValidity==="function") field.setCustomValidity("");
+  updateEditor();
+};
+$("form").onsubmit=event=>{
+  event.preventDefault();
+  const form=event.currentTarget, input=form.elements;
+  const data=Object.fromEntries(new FormData(form));
+  for (const key of ["name","brand","acquirePlatform","note"]) data[key]=data[key].trim();
+  for (const key of priceKeys) data[key]=amountFromInput(input[key]);
+  data.cost=paidAmount(data);
+  data.tradeFrom=needsTrade(data)?(data.tradeFrom ?? ""):"";
+  data.saleChannel=data.saleChannel ?? "";
+  data.saleProceeds=data.saleProceeds?amountFromInput(input.saleProceeds):null;
+  data.salvage=Math.round(Number(data.salvage)*100);
+  data.life=Number(data.life);
+  data.id=editId ?? ("device-"+(globalThis.crypto?.randomUUID?.() ?? (Date.now()+"-"+Math.random().toString(36).slice(2))));
+  if (!data.name) input.name.setCustomValidity("请输入设备名称。");
+  if (data.cost<0) input.original.setCustomValidity("优惠、国补和换新抵扣的合计不能超过原价。");
+  else if (data.salvage>data.cost) input.salvage.setCustomValidity("预计残值不能高于实付金额。");
+  if (data.disposeMethod && !data.disposedOn) input.disposedOn.setCustomValidity("请选择处置日期。");
+  if (needsTrade(data) && !data.tradeFrom) input.tradeFrom.setCustomValidity("请选择已按以旧换新处置的旧设备。");
+  if (data.warranty && data.warranty<data.date) input.warranty.setCustomValidity("保修到期日期不能早于购入日期。");
+  if (data.disposedOn && data.disposedOn<data.date) input.disposedOn.setCustomValidity("处置日期不能早于购入日期。");
+  if (!form.reportValidity()) return;
+  const current=personal ?? [];
+  const existing=current.find(r=>r.id===editId);
+  data.assetNo=existing?.assetNo ?? assetNumber(nextAssetNo);
+  data.activity=existing?.activity ?? [];
+  if (existing && data.disposedOn && openPeriod(existing)) {
+    data.activity=[...data.activity.slice(0,-1),{...openPeriod(existing),end:data.disposedOn}];
+  }
+  if (!validActivity(data)) {
+    const field=data.activity[0]?.start<data.date ? input.date : input.disposedOn;
+    field.setCustomValidity("购入和处置日期必须包含已登记的维修或暂停日期。");
+    form.reportValidity();
+    return;
+  }
+  if (!validRecord(data)) { notify("请检查设备信息。"); return; }
+  if (!editId && current.length>=5000) { notify("账本最多支持 5000 台设备。"); return; }
+  const next=existing ? current.map(r=>r.id===editId?data:r) : [...current,data];
+  if (!validTradeLinks(next)) {
+    const linked=current.find(r=>r.tradeFrom===data.id);
+    const message=linked ? "此设备已关联到 "+linked.assetNo+"。请先解除换新关联，再修改会使关联失效的信息。" :
+      "请选择购入时间更早或相同、已按以旧换新处置且尚未关联的设备。换新关联不能形成循环。";
+    const field=linked?input.disposedOn:input.tradeFrom;
+    field.setCustomValidity(message);
+    form.reportValidity();
+    return;
+  }
+  if (!existing) nextAssetNo++;
+  $("editor").close();
+  clearFilters();
+  save(next,isDisposed(data)?"已登记处置，设备卡片仍保留。":editId?"设备已更新。":"设备已添加到个人账本。");
+  if ($("detail").open) renderDetail();
+};
+$("remove").onclick=()=>{
+  const record=personal?.find(r=>r.id===editId);
+  const linked=personal?.find(r=>r.tradeFrom===editId);
+  if (linked) { alert("此设备已关联到 "+linked.assetNo+"。请先解除换新关联再删除。"); return; }
+  if (record && confirm("永久删除「"+record.name+"」的资产卡片？如需保留历史，请在编辑中填写处置日期。")) {
+    $("editor").close();
+    if ($("detail").open) $("detail").close();
+    save(personal.filter(r=>r.id!==editId),"设备已删除。");
+  }
+};
+$("methodButton").onclick=()=>$("method").showModal();
+$("backupButton").onclick=()=>{
+  $("backupNote").textContent=personal===null ? "当前为示例模式，可导出示例体验功能。导入后将进入个人账本。" : "导入备份会替换当前账本，导入前会再次确认。";
+  $("backup").showModal();
+};
+function download(content,type,extension,filename="设备账本") {
+  const url=URL.createObjectURL(content instanceof Blob ? content : new Blob([content],{type}));
+  const link=document.createElement("a");
+  link.href=url;
+  link.download=filename+"-"+iso(today)+"."+extension;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+$("exportJson").onclick=()=>download(JSON.stringify({version:4,devices:records(),nextAssetNo:personal===null?sample.length+1:nextAssetNo},null,2),"application/json","json");
+
+const exportHeaders=[
+  "资产编号","设备名称","品牌","类别","获取方式","购入平台或来源","购入日期","原价（元）","优惠（元）",
+  "国补（元）","换新抵扣（元）","实付金额（元）","换出旧设备编号","换入新设备编号","状态","处置日期",
+  "处置方式","二手转卖渠道","转卖收入（元）","持有天数","估算余值（元）","累计折旧（元）","估值日期",
+  "预计使用（月）","预计残值（元）","保修到期","备注","维修次数","维修费用（元）","维修或暂停天数"
+];
+function exportRows(list) {
+  const byId=new Map(records().map(r=>[r.id,r]));
+  const replacedBy=new Map(records().filter(r=>r.tradeFrom).map(r=>[r.tradeFrom,r.assetNo]));
+  return list.map(r=>{
+    const value=recordValue(r), totals=activityTotals(r);
+    return [r.assetNo,r.name,r.brand,r.category,r.acquireMethod,r.acquirePlatform,r.date,r.original/100,r.discount/100,
+      r.subsidy/100,r.tradeCredit/100,r.cost/100,byId.get(r.tradeFrom)?.assetNo ?? "",replacedBy.get(r.id) ?? "",
+      statusLabels[statusOf(r)],r.disposedOn,r.disposeMethod,r.saleChannel,r.saleProceeds===null?"":r.saleProceeds/100,
+      daysUsed(r),value/100,(r.cost-value)/100,iso(recordDay(r)),r.life,r.salvage/100,r.warranty,r.note,totals.repairs,totals.expense/100,totals.days];
+  });
+}
+$("exportCsv").onclick=()=>{
+  const cell=value=>{
+    const text=String(value);
+    return '"'+(/^[\s]*[=+@-]|^[\t\r\n]/.test(text)?"'":"")+text.replaceAll('"','""')+'"';
+  };
+  download("\ufeff"+[exportHeaders,...exportRows(records())].map(row=>row.map(cell).join(",")).join("\r\n"),"text/csv;charset=utf-8","csv");
+};
+// An uncompressed ZIP keeps Excel export self-contained, including in the offline copy.
+function zipWorkbook(files) {
+  const encoder=new TextEncoder();
+  const chunks=[], directory=[];
+  const crcTable=Uint32Array.from({length:256},(_,index)=>{
+    let crc=index;
+    for(let bit=0;bit<8;bit++) crc=crc&1 ? 0xedb88320^(crc>>>1) : crc>>>1;
+    return crc;
+  });
+  const buffer=(length,signature)=>{
+    const bytes=new Uint8Array(length), view=new DataView(bytes.buffer);
+    const u16=(offset,value)=>view.setUint16(offset,value,true);
+    const u32=(offset,value)=>view.setUint32(offset,value,true);
+    u32(0,signature);
+    return {bytes,u16,u32};
+  };
+  let offset=0, directorySize=0;
+  for(const [path,xml] of Object.entries(files)){
+    const name=encoder.encode(path), content=encoder.encode(xml);
+    let crc=0xffffffff;
+    for(const byte of content) crc=crcTable[(crc^byte)&255]^(crc>>>8);
+    crc=(crc^0xffffffff)>>>0;
+    const local=buffer(30,0x04034b50);
+    local.u16(4,20);
+    local.u16(12,33);
+    local.u32(14,crc);
+    local.u32(18,content.length);
+    local.u32(22,content.length);
+    local.u16(26,name.length);
+    chunks.push(local.bytes,name,content);
+    const central=buffer(46,0x02014b50);
+    central.u16(4,20);
+    central.u16(6,20);
+    central.u16(14,33);
+    central.u32(16,crc);
+    central.u32(20,content.length);
+    central.u32(24,content.length);
+    central.u16(28,name.length);
+    central.u32(42,offset);
+    directory.push(central.bytes,name);
+    directorySize+=46+name.length;
+    offset+=30+name.length+content.length;
+  }
+  const end=buffer(22,0x06054b50), count=directory.length/2;
+  end.u16(8,count);
+  end.u16(10,count);
+  end.u32(12,directorySize);
+  end.u32(16,offset);
+  return new Blob([...chunks,...directory,end.bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+}
+function createWorkbook(list) {
+  const relationship="http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+  const packageRelationship="http://schemas.openxmlformats.org/package/2006/relationships";
+  const sheet="http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+  const xml=value=>escape(String(value).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\ufffe\uffff]/g,""));
+  const columns=exportHeaders.map((_,i)=>i<26 ? String.fromCharCode(65+i) : "A"+String.fromCharCode(65+i-26));
+  const styledText=(value,header)=>String(value).split(/([\p{Script=Han}\u3000-\u303f\uff01-\uff60]+)/u)
+    .map((part,i)=>{
+      if (!part) return "";
+      const font=i%2===1?'<rFont val="宋体"/><charset val="134"/>':'<rFont val="Times New Roman"/>';
+      return '<r><rPr>'+font+(header?'<b/><color rgb="FFFFFFFF"/>':'')+'<sz val="11"/></rPr><t xml:space="preserve">'+xml(part)+'</t></r>';
+    }).join("") || "<t/>";
+  const rows=[exportHeaders,...exportRows(list)];
+  const moneyColumns=new Set([7,8,9,10,11,18,20,21,24,28]);
+  const sheetRows=rows.map((row,i)=>'<row r="'+(i+1)+'">'+row.map((value,j)=>{
+    const ref=columns[j]+(i+1);
+    if (typeof value==="number") return '<c r="'+ref+'"'+(moneyColumns.has(j)?' s="2"':'')+'><v>'+value+'</v></c>';
+    return '<c r="'+ref+'" t="inlineStr"'+(i===0?' s="1"':'')+'><is>'+styledText(value,i===0)+'</is></c>';
+  }).join("")+'</row>').join("");
+  const widths=[13,28,15,12,14,22,14,15,15,15,15,17,19,19,12,14,15,20,17,13,17,17,14,15,17,14,32,13,17,17];
+  const cols=widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join("");
+  return zipWorkbook({
+    "[Content_Types].xml":'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
+    "_rels/.rels":'<Relationships xmlns="'+packageRelationship+'"><Relationship Id="rId1" Type="'+relationship+'/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+    "xl/workbook.xml":'<workbook xmlns="'+sheet+'" xmlns:r="'+relationship+'"><bookViews><workbookView/></bookViews><sheets><sheet name="设备清单" sheetId="1" r:id="rId1"/></sheets></workbook>',
+    "xl/_rels/workbook.xml.rels":'<Relationships xmlns="'+packageRelationship+'"><Relationship Id="rId1" Type="'+relationship+'/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="'+relationship+'/styles" Target="styles.xml"/></Relationships>',
+    "xl/styles.xml":'<styleSheet xmlns="'+sheet+'"><fonts count="2"><font><sz val="11"/><name val="Times New Roman"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="宋体"/><charset val="134"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1C4837"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="2" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>',
+    "xl/worksheets/sheet1.xml":'<worksheet xmlns="'+sheet+'"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>'+cols+'</cols><sheetData>'+sheetRows+'</sheetData><autoFilter ref="A1:'+columns.at(-1)+rows.length+'"/></worksheet>'
+  });
+}
+$("exportXlsx").onclick=()=>download(createWorkbook(filteredRecords()),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","xlsx");
+$("exportPdf").onclick=()=>{
+  const list=filteredRecords();
+  if (!list.length) return;
+  const byId=new Map(records().map(r=>[r.id,r]));
+  const replacedBy=new Map(records().filter(r=>r.tradeFrom).map(r=>[r.tradeFrom,r.assetNo]));
+  const cell=(...values)=>"<td>"+values.filter(Boolean).map((value,i)=>{
+    const tag=i===0?"strong":"small";
+    return "<"+tag+">"+escape(value)+"</"+tag+">";
+  }).join("")+"</td>";
+  const rows=list.map(r=>{
+    const value=recordValue(r), totals=activityTotals(r);
+    return "<tr>"+
+      cell(r.name,r.assetNo,[r.brand,r.category].filter(Boolean).join(" · "),r.note)+
+      cell(r.date,r.acquireMethod,r.acquirePlatform,r.warranty?"保修至 "+r.warranty:"")+
+      cell("实付 "+yuan(r.cost),"原价 "+yuan(r.original),"优惠 "+yuan(r.discount),"国补 "+yuan(r.subsidy),"换新抵扣 "+yuan(r.tradeCredit))+
+      cell(statusLabels[statusOf(r)],r.disposedOn,r.disposeMethod,r.saleChannel,r.saleProceeds===null?"":"转卖收入 "+yuan(r.saleProceeds),
+        r.tradeFrom?"换出 "+byId.get(r.tradeFrom).assetNo:"",replacedBy.has(r.id)?"换入 "+replacedBy.get(r.id):"")+
+      cell(age(toDay(r.date),Math.max(toDay(r.date),recordDay(r))),daysUsed(r)+" 天",totals.days?"维修或暂停 "+totals.days+" 天":"",totals.repairs?"维修 "+totals.repairs+" 次 · "+yuan(totals.expense):"","预计 "+r.life+" 个月","预计残值 "+yuan(r.salvage))+
+      cell(yuan(value),"累计折旧 "+yuan(r.cost-value),"估值日期 "+iso(recordDay(r)))+"</tr>";
+  }).join("");
+  const headers=["设备 / 资产编号","购入信息","价格明细","状态 / 处置","持有与维修","折旧估值"];
+  $("printReport").innerHTML='<h1>设备清单</h1><p>'+iso(today)+' · '+list.length+' 台'+(personal===null?' · 示例账本':'')+' · 金额单位为人民币 · 按实付金额计提折旧</p><table><thead><tr>'+
+    headers.map(label=>'<th scope="col">'+label+'</th>').join("")+'</tr></thead><tbody>'+rows+'</tbody></table>';
+  document.body.classList.add("printing");
+  const originalTitle=document.title;
+  document.title="设备清单-"+iso(today);
+  window.addEventListener("afterprint",()=>{
+    document.body.classList.remove("printing");
+    document.title=originalTitle;
+  },{once:true});
+  notify("在打印窗口中选择「另存为 PDF」。");
+  window.print();
+};
+$("importButton").onclick=()=>$("importFile").click();
+$("importFile").onchange=async event=>{
+  const file=event.target.files[0];
+  event.target.value="";
+  if (!file) return;
+  let backup;
+  try {
+    if (file.size>8000000) throw new Error("too large");
+    const data=JSON.parse(await file.text());
+    if (![1,2,3,4].includes(data?.version)) throw new Error("invalid backup version");
+    backup=readLedger(data,personal ?? [],nextAssetNo);
+    if (backup.devices.some(r=>r.date>iso(today) || r.disposedOn>iso(today))) throw new Error("invalid backup dates");
+  } catch {
+    $("backup").close();
+    notify("无法导入。请选择本网站导出的有效 JSON 备份。");
+    return;
+  }
+  if (personal?.length && !confirm("用备份中的 "+backup.devices.length+" 台设备替换当前 "+personal.length+" 台设备？")) return;
+  $("backup").close();
+  clearFilters();
+  nextAssetNo=Math.max(nextAssetNo,backup.nextAssetNo);
+  save(backup.devices,"已恢复 "+backup.devices.length+" 台设备。");
+};
+let resizeTimer;
+window.addEventListener("resize",()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>{
+    if (currentPage()==="overview") renderTrend();
+    if ($("detail").open) renderDetail();
+  },100);
+});
+function refreshDate() {
+  const now=getToday();
+  if (now!==today) { today=now; $("date").max=iso(now); $("disposedOn").max=iso(now); render(); if ($("detail").open) renderDetail(); }
+}
+window.addEventListener("focus",refreshDate);
+setInterval(refreshDate,60000);
+window.addEventListener("storage",event=>{
+  if (event.key!==storageKey) return;
+  try {
+    const updated=event.newValue===null ? null : readLedger(JSON.parse(event.newValue));
+    for (const id of ["editor","activity","detail","backup"]) if ($(id).open) $(id).close();
+    personal=updated?.devices ?? null;
+    nextAssetNo=updated?.nextAssetNo ?? 1;
+    render();
+    notify("账本已同步同一浏览器中其他标签页的修改。");
+  } catch { /* Keep the currently displayed records if storage is unreadable. */ }
+});
+
+const workspaceKey="personal-workspace.v1";
+const defaultWorkspace=()=>({tasks:[],notes:[],salary:[],salaryVault:null,title:"个人工作台",eyebrow:"MY WORKSPACE",theme:null});
+const themePresets=[
+  ["默认森林绿",null,"#1c4837"],
+  ["晴空蓝","#386adc"],
+  ["鸢尾紫","#7650aa"],
+  ["莓果粉","#a94266"],
+  ["琥珀橙","#ac6526"],
+  ["石板灰","#556372"]
+];
+const validThemeColor=value=>typeof value==="string" && /^#[0-9a-f]{6}$/i.test(value);
+const salaryKinds=["工资","奖金","补贴","其他"];
+const validMonth=value=>typeof value==="string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(value) && validDate(value+"-01");
+const validWorkId=id=>typeof id==="string" && /^[\w-]{1,100}$/.test(id);
+const validSalary=entry=>entry && validWorkId(entry.id) && validMonth(entry.month) && validDate(entry.received) &&
+  salaryKinds.includes(entry.kind) && validText(entry.source,80) && validText(entry.note,180) && validMoney(entry.net) &&
+  (entry.gross===null || validMoney(entry.gross));
+const validSalaryList=list=>Array.isArray(list) && list.every(validSalary) && new Set(list.map(entry=>entry.id)).size===list.length;
+const validVault=vault=>vault && vault.version===1 && typeof vault.salt==="string" &&
+  /^[A-Za-z0-9+/]{22}==$/.test(vault.salt) && typeof vault.iv==="string" && /^[A-Za-z0-9+/]{16}$/.test(vault.iv) &&
+  typeof vault.ciphertext==="string" && vault.ciphertext.length>=24 && /^[A-Za-z0-9+/]+={0,2}$/.test(vault.ciphertext);
+let workspace=defaultWorkspace();
+let workspaceEdit=null;
+let themeDraft=null;
+let salaryEditId=null;
+let salaryYear=iso(today).slice(0,4);
+let salarySession=null;
+let salaryBusy=false;
+let salaryOperation=0;
+function readWorkspace(raw) {
+  if (raw===null) return defaultWorkspace();
+  const data=JSON.parse(raw);
+  const validItem=item=>item && validWorkId(item.id) && validText(item.title,100) && item.title.trim();
+  if (!Array.isArray(data?.tasks) || !Array.isArray(data.notes) ||
+      !data.tasks.every(item=>validItem(item) && typeof item.done==="boolean" && (item.due==="" || validDate(item.due))) ||
+      !data.notes.every(item=>validItem(item) && validText(item.body,4000) && validDate(item.updated))) {
+    throw new Error("invalid workspace records");
+  }
+  const updated={...defaultWorkspace(),...data};
+  if (!validText(updated.title,40) || !updated.title.trim() || !validText(updated.eyebrow,40) ||
+      (updated.salaryVault===null ? !validSalaryList(updated.salary) : !validVault(updated.salaryVault))) {
+    throw new Error("invalid workspace settings or salary records");
+  }
+  if (updated.salaryVault) updated.salary=[];
+  updated.theme=validThemeColor(updated.theme)?updated.theme.toLowerCase():null;
+  return updated;
+}
+try {
+  workspace=readWorkspace(localStorage.getItem(workspaceKey));
+} catch {
+  $("workspaceWarning").hidden=false;
+}
+function applyTheme(color) {
+  const root=document.documentElement;
+  if (color) root.style.setProperty("--theme-seed",color);
+  else root.style.removeProperty("--theme-seed");
+  root.toggleAttribute("data-custom-theme",Boolean(color));
+}
+function previewTheme(color) {
+  themeDraft=color;
+  applyTheme(color);
+  const swatch=color ?? themePresets[0][2];
+  $("themeColor").value=swatch;
+  $("themeCode").textContent=color ? color.toUpperCase() : "默认配色";
+  $("themePresets").querySelectorAll("[data-theme-index]").forEach(button=>{
+    button.setAttribute("aria-pressed",String(themePresets[Number(button.dataset.themeIndex)][1]===color));
+  });
+}
+$("themePresets").innerHTML=themePresets.map(([label,color,swatch],i)=>
+  '<button type="button" class="button theme-preset" data-theme-index="'+i+'" aria-pressed="false"><span class="theme-swatch" style="--swatch:'+
+  (swatch ?? color)+'"></span>'+label+'</button>'
+).join("");
+$("themeButton").onclick=()=>{
+  previewTheme(workspace.theme);
+  $("themeEditor").showModal();
+};
+$("themePresets").onclick=event=>{
+  const button=event.target.closest("[data-theme-index]");
+  if (button) previewTheme(themePresets[Number(button.dataset.themeIndex)][1]);
+};
+$("themeColor").oninput=event=>{
+  const color=event.target.value;
+  if (validThemeColor(color)) previewTheme(color.toLowerCase());
+};
+$("themeEditor").onclose=()=>applyTheme(workspace.theme);
+$("themeForm").onsubmit=event=>{
+  event.preventDefault();
+  saveWorkspace({...workspace,theme:themeDraft},"主题已保存。");
+  $("themeEditor").close();
+};
+applyTheme(workspace.theme);
+function saveWorkspace(next,message) {
+  workspace=next;
+  try {
+    const stored=readWorkspace(localStorage.getItem(workspaceKey));
+    workspace={...next,salary:stored.salary,salaryVault:stored.salaryVault};
+    if (salarySession && salarySession.vault.ciphertext!==stored.salaryVault?.ciphertext) lockSalary();
+    localStorage.setItem(workspaceKey,JSON.stringify(workspace));
+    $("workspaceWarning").hidden=true;
+  } catch {
+    $("workspaceWarning").hidden=false;
+  }
+  renderPage();
+  notify(message);
+}
+function renderWorkspaceName(page) {
+  for (const id of ["workspaceBrand","workspaceBreadcrumb","workspaceHeading"]) $(id).textContent=workspace.title;
+  $("workspaceEyebrow").textContent=workspace.eyebrow;
+  $("workspaceEyebrow").hidden=!workspace.eyebrow;
+  document.title=page==="home"?workspace.title:pageLabels[page]+" · "+workspace.title;
+}
+function renderWorkspace(page) {
+  const pending=workspace.tasks.filter(task=>!task.done);
+  if (page==="home") {
+    $("homeTaskCount").textContent=pending.length;
+    $("homeNoteCount").textContent=workspace.notes.length;
+    const due=pending.filter(task=>task.due && task.due<=iso(today)).length;
+    $("homeTaskStatus").textContent=due?due+" 项今天或此前到期":pending.length?pending.length+" 项待完成":"暂无待办";
+    const held=personal?.filter(record=>!isDisposed(record)) ?? [];
+    $("homeLedgerStatus").textContent=personal?.length ? held.length+" 台持有 · "+yuanWithCents(held.reduce((sum,r)=>sum+heldValueAt(r,today),0)) : "打开设备台账";
+  }
+  if (page==="tasks") {
+    const filter=$("taskFilter").value;
+    const rows=workspace.tasks.filter(task=>filter==="all" || task.done===(filter==="done")).sort((a,b)=>
+      Number(a.done)-Number(b.done) || (a.due || "9999-12-31").localeCompare(b.due || "9999-12-31"));
+    $("taskCaption").textContent=pending.length+" 项未完成 · "+(workspace.tasks.length-pending.length)+" 项已完成";
+    $("taskRows").innerHTML=rows.map(task=>{
+      const late=!task.done && task.due && task.due<iso(today);
+      const due=task.due ? (late?"已逾期 · ":"截止 ")+task.due : "未设截止日期";
+      return '<li class="work-row"><label><input type="checkbox" data-task-toggle="'+task.id+'"'+(task.done?" checked":"")+
+        '><span><strong>'+escape(task.title)+'</strong><small class="minor'+(late?" due-late":"")+'">'+due+
+        '</small></span></label><button class="icon-button" type="button" data-task-edit="'+task.id+'" aria-label="编辑 '+escape(task.title)+'">'+icon("edit")+'</button></li>';
+    }).join("") || '<li class="empty">'+(workspace.tasks.length?"当前筛选下没有待办。":"还没有待办。点击「添加待办」开始记录。")+'</li>';
+  }
+  if (page==="notes") {
+    $("noteRows").innerHTML=workspace.notes.map(note=>
+      '<button type="button" class="panel note-card" data-note-edit="'+note.id+'"><h3>'+escape(note.title)+
+      '</h3><p>'+escape(note.body || "暂无正文")+'</p><small class="minor">更新于 '+note.updated+'</small></button>'
+    ).join("") || '<div class="panel empty">还没有笔记。点击「新建笔记」开始记录。</div>';
+  }
+  if (page==="salary") renderSalary();
+  if (page==="settings") {
+    const preset=themePresets.find(([,color])=>color===workspace.theme);
+    $("settingsThemeName").textContent=preset?.[0] ?? workspace.theme.toUpperCase();
+    $("settingsThemeSwatch").style.setProperty("--swatch",workspace.theme ?? themePresets[0][2]);
+  }
+}
+function openWorkspaceEditor(kind,item) {
+  workspaceEdit={kind,id:item?.id ?? null};
+  const note=kind==="notes";
+  $("workspaceEditorTitle").textContent=(item?"编辑":note?"新建":"添加")+(note?"笔记":"待办");
+  $("workspaceDueField").hidden=note;
+  $("workspaceDue").disabled=note;
+  $("workspaceBodyField").hidden=!note;
+  $("workspaceBody").disabled=!note;
+  $("workspaceDelete").hidden=!item;
+  $("workspaceTitle").setCustomValidity("");
+  $("workspaceTitle").value=item?.title ?? "";
+  $("workspaceDue").value=item?.due ?? "";
+  $("workspaceBody").value=item?.body ?? "";
+  $("workspaceEditor").showModal();
+  $("workspaceTitle").focus();
+}
+$("taskFilter").onchange=()=>renderWorkspace("tasks");
+$("addTask").onclick=()=>openWorkspaceEditor("tasks");
+$("addNote").onclick=()=>openWorkspaceEditor("notes");
+$("taskRows").onchange=event=>{
+  const id=event.target.dataset.taskToggle;
+  if (!id) return;
+  const done=event.target.checked;
+  saveWorkspace({...workspace,tasks:workspace.tasks.map(task=>task.id===id?{...task,done}:task)},done?"待办已完成。":"待办已恢复为未完成。");
+};
+$("taskRows").onclick=event=>{
+  const id=event.target.closest("[data-task-edit]")?.dataset.taskEdit;
+  if (id) openWorkspaceEditor("tasks",workspace.tasks.find(task=>task.id===id));
+};
+$("noteRows").onclick=event=>{
+  const id=event.target.closest("[data-note-edit]")?.dataset.noteEdit;
+  if (id) openWorkspaceEditor("notes",workspace.notes.find(note=>note.id===id));
+};
+$("workspaceTitle").oninput=()=>$("workspaceTitle").setCustomValidity("");
+$("workspaceForm").onsubmit=event=>{
+  event.preventDefault();
+  const {kind,id}=workspaceEdit;
+  const title=$("workspaceTitle").value.trim();
+  if (!title) {
+    $("workspaceTitle").setCustomValidity("请输入标题。");
+    event.currentTarget.reportValidity();
+    return;
+  }
+  const existing=workspace[kind].find(item=>item.id===id);
+  if (id && !existing) {
+    $("workspaceEditor").close();
+    notify("这条记录已在其他标签页删除。");
+    return;
+  }
+  const itemId=id ?? ("work-"+(globalThis.crypto?.randomUUID?.() ?? Date.now()+"-"+Math.random().toString(36).slice(2)));
+  const item=kind==="tasks" ? {id:itemId,title,due:$("workspaceDue").value,done:existing?.done ?? false} :
+    {id:itemId,title,body:$("workspaceBody").value.trim(),updated:iso(today)};
+  const items=kind==="tasks" && existing ? workspace.tasks.map(task=>task.id===id?item:task) :
+    [item,...workspace[kind].filter(entry=>entry.id!==id)];
+  $("workspaceEditor").close();
+  if (kind==="tasks" && !id && $("taskFilter").value==="done") $("taskFilter").value="open";
+  saveWorkspace({...workspace,[kind]:items},"已保存。");
+};
+$("workspaceDelete").onclick=()=>{
+  const {kind,id}=workspaceEdit;
+  const item=workspace[kind].find(entry=>entry.id===id);
+  if (!item || !confirm("删除「"+item.title+"」？")) return;
+  $("workspaceEditor").close();
+  saveWorkspace({...workspace,[kind]:workspace[kind].filter(entry=>entry.id!==id)},"已删除。");
+};
+window.addEventListener("storage",event=>{
+  if (event.key!==workspaceKey) return;
+  try {
+    workspace=readWorkspace(event.newValue);
+    if (salarySession && salarySession.vault.ciphertext!==workspace.salaryVault?.ciphertext) lockSalary();
+    if (!$("themeEditor").open) applyTheme(workspace.theme);
+    $("workspaceWarning").hidden=true;
+    renderPage();
+  } catch {
+    lockSalary();
+    $("workspaceWarning").hidden=false;
+  }
+});
+$("renameWorkspace").onclick=()=>{
+  $("nameHeading").setCustomValidity("");
+  $("nameHeading").value=workspace.title;
+  $("nameEyebrow").value=workspace.eyebrow;
+  $("nameEditor").showModal();
+  $("nameHeading").focus();
+};
+$("nameHeading").oninput=()=>$("nameHeading").setCustomValidity("");
+$("nameForm").onsubmit=event=>{
+  event.preventDefault();
+  const title=$("nameHeading").value.trim();
+  const eyebrow=$("nameEyebrow").value.trim();
+  if (!title) {
+    $("nameHeading").setCustomValidity("请输入主标题。");
+    event.currentTarget.reportValidity();
+    return;
+  }
+  $("nameEditor").close();
+  saveWorkspace({...workspace,title,eyebrow},"名称已保存。");
+};
+function toBase64(bytes) {
+  let text="";
+  for (let i=0;i<bytes.length;i+=16384) text+=String.fromCharCode(...bytes.subarray(i,i+16384));
+  return btoa(text);
+}
+const fromBase64=text=>Uint8Array.from(atob(text),character=>character.charCodeAt(0));
+async function salaryKey(password,salt) {
+  const material=await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt:fromBase64(salt),iterations:600000,hash:"SHA-256"},material,
+    {name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+}
+async function encryptSalary(entries,key,salt) {
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext=await crypto.subtle.encrypt({name:"AES-GCM",iv},key,new TextEncoder().encode(JSON.stringify(entries)));
+  return {version:1,salt,iv:toBase64(iv),ciphertext:toBase64(new Uint8Array(ciphertext))};
+}
+async function decryptSalary(vault,key) {
+  const clear=await crypto.subtle.decrypt({name:"AES-GCM",iv:fromBase64(vault.iv)},key,fromBase64(vault.ciphertext));
+  const entries=JSON.parse(new TextDecoder().decode(clear));
+  if (!validSalaryList(entries)) throw new Error("invalid salary records");
+  return entries;
+}
+function setSalaryBusy(busy) {
+  salaryBusy=busy;
+  $("salaryUnlock").disabled=busy || !globalThis.crypto?.subtle;
+  $("salarySave").disabled=busy;
+  $("salaryDelete").disabled=busy;
+}
+function lockSalary() {
+  salaryOperation++;
+  salarySession=null;
+  salaryEditId=null;
+  $("salaryPassword").value=$("salaryConfirmPassword").value="";
+  $("salaryGateError").textContent=$("salarySaveError").textContent="";
+  if ($("salaryEditor").open) $("salaryEditor").close();
+  $("salaryForm").reset();
+  setSalaryBusy(false);
+  renderSalary();
+}
+function renderSalary() {
+  const unlocked=Boolean(salarySession);
+  $("salaryGate").hidden=unlocked;
+  $("salaryContent").hidden=$("salaryActions").hidden=!unlocked;
+  if (!unlocked) {
+    $("salaryRows").innerHTML=$("salaryMetrics").innerHTML=$("salaryCaption").textContent="";
+    $("salaryYear").replaceChildren();
+    const setup=!workspace.salaryVault;
+    $("salaryGateTitle").textContent=setup?"设置工资收入密码":"解锁工资收入";
+    $("salaryGateHint").textContent=setup?"设置至少 10 个字符的密码，保存后会加密已有工资记录。":"请输入密码查看工资记录。";
+    $("salaryConfirmField").hidden=!setup;
+    $("salaryConfirmPassword").disabled=!setup;
+    $("salaryConfirmPassword").required=setup;
+    $("salaryPassword").autocomplete=setup?"new-password":"current-password";
+    $("salaryPassword").minLength=setup?10:1;
+    $("salaryUnlock").textContent=setup?"设置密码并进入":"解锁";
+    $("salaryUnlock").disabled=salaryBusy || !globalThis.crypto?.subtle;
+    if (!globalThis.crypto?.subtle) $("salaryGateError").textContent="当前页面无法使用浏览器加密。请在 HTTPS 工作台中打开工资收入。";
+    return;
+  }
+  const all=salarySession.entries;
+  const month=iso(today).slice(0,7);
+  const years=new Set([month.slice(0,4),...all.map(entry=>entry.month.slice(0,4))]);
+  if (salaryYear!=="all") years.add(salaryYear);
+  const yearSelect=$("salaryYear");
+  yearSelect.replaceChildren(new Option("全部年份","all"),...[...years].sort().reverse().map(year=>new Option(year+" 年",year)));
+  yearSelect.value=salaryYear;
+  const rows=all.filter(entry=>salaryYear==="all" || entry.month.slice(0,4)===salaryYear)
+    .sort((a,b)=>b.month.localeCompare(a.month) || b.received.localeCompare(a.received));
+  const current=all.filter(entry=>entry.month===month);
+  const gross=rows.filter(entry=>entry.gross!==null);
+  const netTotal=items=>items.reduce((sum,entry)=>sum+entry.net,0);
+  const metrics=[
+    ["本月实收",yuanWithCents(netTotal(current)),month+" · "+current.length+" 笔","wallet"],
+    [salaryYear==="all"?"全部实收":salaryYear+" 年实收",yuanWithCents(netTotal(rows)),"按工资归属月份 · "+rows.length+" 笔","trend"],
+    ["已填税前合计",gross.length?yuanWithCents(gross.reduce((sum,entry)=>sum+entry.gross,0)):"—",gross.length+" / "+rows.length+" 笔填写了税前金额","archive"]
+  ];
+  $("salaryMetrics").innerHTML=metrics.map(([label,amount,caption,symbol])=>
+    '<article class="metric"><div class="metric-label">'+label+'<span>'+icon(symbol)+'</span></div><div class="number">'+amount+
+    '</div><div class="caption">'+caption+'</div></article>').join("");
+  $("salaryCaption").textContent=(salaryYear==="all"?"全部年份":salaryYear+" 年")+" · "+rows.length+" 笔记录";
+  $("salaryRows").innerHTML=rows.map(entry=>
+    '<tr><td>'+entry.month+'</td><td>'+entry.received+'</td><td>'+entry.kind+'</td><td class="salary-source">'+escape(entry.source || "—")+
+    '</td><td>'+(entry.gross===null?"—":yuanWithCents(entry.gross))+'</td><td><strong class="amount">'+yuanWithCents(entry.net)+
+    '</strong></td><td><span class="salary-table-note">'+escape(entry.note || "—")+'</span></td><td><button type="button" class="icon-button" data-salary-edit="'+entry.id+
+    '" aria-label="编辑 '+entry.month+' '+entry.kind+'">'+icon("edit")+'</button></td></tr>'
+  ).join("") || '<tr><td class="empty" colspan="8">'+(all.length?"所选年份暂无记录。":"还没有工资记录。点击「登记收入」添加第一笔。")+'</td></tr>';
+}
+function openSalaryEditor(entry) {
+  if (!salarySession || salaryBusy) return;
+  salaryEditId=entry?.id ?? null;
+  const fields=$("salaryForm").elements;
+  $("salaryEditorTitle").textContent=entry?"编辑收入":"登记收入";
+  $("salaryDelete").hidden=!entry;
+  $("salarySaveError").textContent="";
+  fields.month.setCustomValidity("");
+  fields.month.value=entry?.month ?? iso(today).slice(0,7);
+  fields.received.max=iso(today);
+  fields.received.value=entry?.received ?? iso(today);
+  fields.kind.value=entry?.kind ?? "工资";
+  fields.source.value=entry?.source ?? "";
+  fields.gross.value=entry?.gross==null?"":entry.gross/100;
+  fields.net.value=entry?entry.net/100:"";
+  fields.note.value=entry?.note ?? "";
+  $("salaryEditor").showModal();
+  fields.month.focus();
+}
+$("lockSalary").onclick=()=>{ lockSalary(); $("salaryPassword").focus(); };
+window.addEventListener("pagehide",lockSalary);
+$("salaryUnlockForm").onsubmit=async event=>{
+  event.preventDefault();
+  if (salarySession || salaryBusy || !globalThis.crypto?.subtle) return;
+  const password=$("salaryPassword").value, confirmation=$("salaryConfirmPassword").value;
+  const error=$("salaryGateError");
+  error.textContent="";
+  const operation=++salaryOperation;
+  const active=()=>operation===salaryOperation && currentPage()==="salary";
+  setSalaryBusy(true);
+  try {
+    const stored=readWorkspace(localStorage.getItem(workspaceKey));
+    const existing=stored.salaryVault;
+    if (!existing && (password.length<10 || password!==confirmation)) {
+      error.textContent=password.length<10?"密码至少需要 10 个字符。":"两次输入的密码不一致。";
+      return;
+    }
+    $("salaryPassword").value=$("salaryConfirmPassword").value="";
+    const salt=existing?.salt ?? toBase64(crypto.getRandomValues(new Uint8Array(16)));
+    const key=await salaryKey(password,salt);
+    if (!active()) return;
+    let entries=stored.salary, vault=existing;
+    if (existing) {
+      try { entries=await decryptSalary(existing,key); }
+      catch { if (active()) error.textContent="密码不正确，或加密记录已损坏。"; return; }
+    } else {
+      vault=await encryptSalary(entries,key,salt);
+    }
+    if (!active()) return;
+    const latest=readWorkspace(localStorage.getItem(workspaceKey));
+    if (latest.salaryVault?.ciphertext!==existing?.ciphertext ||
+        (!existing && JSON.stringify(latest.salary)!==JSON.stringify(stored.salary))) {
+      workspace=latest;
+      renderSalary();
+      error.textContent="工资记录刚在其他标签页更新，请重试。";
+      return;
+    }
+    if (!existing) {
+      const updated={...latest,salary:[],salaryVault:vault};
+      localStorage.setItem(workspaceKey,JSON.stringify(updated));
+      workspace=updated;
+    } else workspace=latest;
+    salarySession={key,vault,entries};
+    renderSalary();
+    $("addSalary").focus();
+  } catch {
+    if (active()) error.textContent="无法读取或保存工资记录，请确认浏览器允许本地存储后重试。";
+  } finally {
+    if (active()) setSalaryBusy(false);
+  }
+};
+async function saveSalary(entries,message) {
+  const session=salarySession;
+  if (!session || salaryBusy) return false;
+  const operation=++salaryOperation;
+  setSalaryBusy(true);
+  $("salarySaveError").textContent="";
+  try {
+    const vault=await encryptSalary(entries,session.key,session.vault.salt);
+    if (operation!==salaryOperation || currentPage()!=="salary" || !$("salaryEditor").open) return false;
+    const stored=readWorkspace(localStorage.getItem(workspaceKey));
+    if (stored.salaryVault?.ciphertext!==session.vault.ciphertext) {
+      workspace=stored;
+      lockSalary();
+      $("salaryGateError").textContent="工资记录刚在其他标签页更新，请重新解锁。";
+      return false;
+    }
+    const updated={...stored,salary:[],salaryVault:vault};
+    localStorage.setItem(workspaceKey,JSON.stringify(updated));
+    workspace=updated;
+    salarySession={key:session.key,vault,entries};
+    $("salaryEditor").close();
+    notify(message);
+    return true;
+  } catch {
+    if (operation===salaryOperation) $("salarySaveError").textContent="无法保存加密记录，请检查浏览器存储空间后重试。";
+    return false;
+  } finally {
+    if (operation===salaryOperation) setSalaryBusy(false);
+  }
+}
+$("addSalary").onclick=()=>openSalaryEditor();
+$("salaryYear").onchange=event=>{ salaryYear=event.target.value; renderSalary(); };
+$("salaryRows").onclick=event=>{
+  const id=event.target.closest("[data-salary-edit]")?.dataset.salaryEdit;
+  const entry=id && salarySession?.entries.find(item=>item.id===id);
+  if (entry) openSalaryEditor(entry);
+};
+$("salaryForm").oninput=event=>event.currentTarget.elements.month.setCustomValidity("");
+$("salaryForm").onsubmit=async event=>{
+  event.preventDefault();
+  if (!salarySession || salaryBusy) return;
+  const form=event.currentTarget, fields=form.elements;
+  if (!validMonth(fields.month.value)) {
+    fields.month.setCustomValidity("请输入有效的工资月份，例如 2026-11。");
+    form.reportValidity();
+    return;
+  }
+  const id=salaryEditId ?? ("salary-"+(globalThis.crypto?.randomUUID?.() ?? Date.now()+"-"+Math.random().toString(36).slice(2)));
+  const entry={id,month:fields.month.value,received:fields.received.value,kind:fields.kind.value,
+    source:fields.source.value.trim(),gross:fields.gross.value===""?null:amountFromInput(fields.gross),
+    net:amountFromInput(fields.net),note:fields.note.value.trim()};
+  if (!validSalary(entry) || fields.net.value==="" || entry.received>iso(today)) { notify("请核对工资月份、到账日期和金额。"); return; }
+  const entries=salarySession.entries;
+  if (salaryEditId && !entries.some(item=>item.id===id)) {
+    $("salaryEditor").close();
+    notify("这条记录已在其他标签页删除。");
+    return;
+  }
+  const updated=salaryEditId?entries.map(item=>item.id===id?entry:item):[entry,...entries];
+  if (await saveSalary(updated,"收入已保存。")) {
+    if (salaryYear!=="all") salaryYear=entry.month.slice(0,4);
+    renderSalary();
+  }
+};
+$("salaryDelete").onclick=async()=>{
+  const entries=salarySession?.entries;
+  const entry=entries?.find(item=>item.id===salaryEditId);
+  if (!entry || !confirm("删除这条 "+entry.month+" 的"+entry.kind+"记录？")) return;
+  if (await saveSalary(entries.filter(item=>item.id!==entry.id),"收入记录已删除。")) renderSalary();
+};
+const backupFormat="personal-workspace-backup";
+const backupFileLimit=12*1024*1024;
+function makeSnapshot(ledger,settings) {
+  if (settings.salary.length) throw new Error("unencrypted salary");
+  const {tasks,notes,title,eyebrow,theme,salaryVault}=settings;
+  return {
+    ledger,
+    workspace:{tasks,notes,title,eyebrow,theme,salaryVault,salary:[]}
+  };
+}
+function workspaceSnapshot() {
+  return makeSnapshot(personal===null?null:{version:4,devices:personal,nextAssetNo},workspace);
+}
+function readWorkspaceSnapshot(snapshot) {
+  if (!snapshot || !Object.hasOwn(snapshot,"ledger") || !Array.isArray(snapshot.workspace?.salary) || snapshot.workspace.salary.length) {
+    throw new Error("invalid backup snapshot");
+  }
+  const settings=readWorkspace(JSON.stringify(snapshot.workspace));
+  for (const list of [settings.tasks,settings.notes]) {
+    if (new Set(list.map(item=>item.id)).size!==list.length) throw new Error("duplicate workspace records");
+  }
+  const {tasks,notes,title,eyebrow,theme,salaryVault}=settings;
+  const ledger=snapshot.ledger===null?null:readLedger(snapshot.ledger);
+  return {ledger,workspace:{tasks,notes,title,eyebrow,theme,salaryVault,salary:[]}};
+}
+function restoreWorkspaceSnapshot(snapshot) {
+  const previous=localStorage.getItem(storageKey);
+  try {
+    if (snapshot.ledger===null) localStorage.removeItem(storageKey);
+    else localStorage.setItem(storageKey,JSON.stringify(snapshot.ledger));
+    localStorage.setItem(workspaceKey,JSON.stringify(snapshot.workspace));
+  } catch (error) {
+    if (previous===null) localStorage.removeItem(storageKey);
+    else localStorage.setItem(storageKey,previous);
+    throw error;
+  }
+  personal=snapshot.ledger?.devices ?? null;
+  nextAssetNo=snapshot.ledger?.nextAssetNo ?? 1;
+  workspace=snapshot.workspace;
+  lockSalary();
+  applyTheme(workspace.theme);
+  $("workspaceWarning").hidden=$("storageWarning").hidden=true;
+  clearFilters();
+  render();
+}
+$("exportFullBackup").onclick=()=>{
+  const status=$("fullBackupStatus");
+  if (workspace.salary.length) {
+    status.textContent="请先到「工资收入」设置密码，将已有工资记录加密后再备份。";
+    return;
+  }
+  const file={format:backupFormat,version:1,exportedAt:new Date().toISOString(),snapshot:workspaceSnapshot()};
+  download(JSON.stringify(file),"application/json","json","个人工作台完整备份");
+  status.textContent="已生成备份文件，请保存到你能找到的位置。";
+};
+$("importFullBackup").onclick=()=>$("fullBackupFile").click();
+$("fullBackupFile").onchange=async event=>{
+  const file=event.target.files[0];
+  event.target.value="";
+  if (!file) return;
+  const status=$("fullBackupStatus");
+  let snapshot;
+  try {
+    if (file.size>backupFileLimit) throw new Error("backup too large");
+    const data=JSON.parse(await file.text());
+    if (data?.format!==backupFormat || data.version!==1) throw new Error("unknown backup format");
+    snapshot=readWorkspaceSnapshot(data.snapshot);
+  } catch {
+    status.textContent="无法读取这份备份，请选择有效的「个人工作台完整备份」JSON 文件。";
+    return;
+  }
+  const {ledger,workspace:settings}=snapshot;
+  const summary=(ledger?.devices.length ?? 0)+" 台设备、"+settings.tasks.length+" 项待办、"+settings.notes.length+" 条笔记"+
+    (settings.salaryVault?"，以及加密工资记录":"");
+  if (!confirm("将恢复 "+summary+"。这会替换当前浏览器里的工作台数据。继续恢复？")) return;
+  try {
+    restoreWorkspaceSnapshot(snapshot);
+    status.textContent="恢复完成。已恢复 "+summary+"。";
+  } catch {
+    status.textContent="恢复未完成，请检查浏览器存储空间及权限。";
+  }
+};
+render();
+
+</script>
+</body>
+</html>
