@@ -337,18 +337,20 @@ function initializeMap() {
   }
   map = L.map("map", { scrollWheelZoom: false, minZoom: 3, maxZoom: 15, worldCopyJump: true });
   map.zoomControl.setPosition("bottomright");
-  const tile = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 15,
-  });
-  tile.on("tileerror", () => {
-    mapNotice = "底图暂不可用，已定位的城市和路线仍会显示。";
-    updateMapNotice();
-  });
-  tile.on("tileload", () => {
-    if (mapNotice) { mapNotice = ""; updateMapNotice(); }
-  });
-  tile.addTo(map);
+  if (typeof travelBasemap === "undefined") {
+    mapNotice = "底图暂未载入，已定位的城市和路线仍会显示。";
+  } else {
+    const pane = map.createPane("travel-basemap");
+    pane.style.zIndex = "250";
+    pane.style.pointerEvents = "none";
+    for (const [focus, rings] of travelBasemap) {
+      L.polygon(rings, {
+        pane: "travel-basemap", interactive: false, weight: focus ? 1.2 : .7,
+        color: focus ? "#759e98" : "#a8b9c2", fillColor: focus ? "#cde4dc" : "#edf0ef", fillOpacity: 1,
+      }).addTo(map);
+    }
+    map.attributionControl.addAttribution('<a href="https://www.naturalearthdata.com/downloads/10m-cultural-vectors/">Natural Earth</a> · 区域示意');
+  }
   lines = L.layerGroup().addTo(map);
   markers = L.layerGroup().addTo(map);
   resetMapView();
@@ -380,6 +382,11 @@ function drawMap() {
   visibleLegs.forEach(({ leg }) => path(leg));
   const cities = new Set(selected ? visited(selected) : view.cities.keys());
   visibleLegs.forEach(({ leg }) => { cities.add(leg.from); cities.add(leg.to); });
+  for (const city of ["北京", "上海", "广州", "成都", "西安", "武汉", "哈尔滨", "乌鲁木齐", "拉萨", "昆明", "海口", "台北"]) {
+    if (cities.has(city)) continue;
+    L.tooltip({ className: "referenceCity", direction: "top", interactive: false, permanent: true })
+      .setLatLng(cityCenters[city]).setContent(el("span", city)).addTo(markers);
+  }
   for (const city of cities) {
     const location = coordinates(city);
     if (!location) continue;

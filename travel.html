@@ -1,9 +1,10 @@
 <!doctype html><html lang="zh-CN"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>差旅足迹 · 个人工作台</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="./travel.css">
-<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script defer src="./travel.js"></script></head><body>
+<link rel="stylesheet" href="./travel-leaflet.css">
+<link rel="stylesheet" href="./travel.css?v=2">
+<script defer src="./travel-leaflet.js"></script>
+<script defer src="./travel-basemap.js"></script>
+<script defer src="./travel.js?v=2"></script></head><body>
 <main>
 <nav class="top"><a href="./#home">← 个人工作台</a><span>我的差旅档案</span></nav>
 <header class="hero"><div><p class="kicker">TRAVEL FOOTPRINTS / 差旅档案</p><h1>差旅足迹</h1><p>把每一段工作旅程，留在地图与时间轴上。</p></div><button id="newTrip" class="primary">＋ 新增出差</button></header>
@@ -21,7 +22,7 @@
 <label class="sr" for="locateCity">定位已到访城市</label><select id="locateCity"><option value="">定位已到访城市</option></select>
 <button id="setCoordinates">城市坐标</button><button id="resetMap">全国总览</button><button id="playRoutes" class="primary">▷ 播放轨迹</button></div></div>
 <div class="mapWrap"><div id="map" aria-label="中国交互地图"></div><div id="mapMessage" class="mapMessage" role="status"></div></div>
-<div id="legend" class="legend"></div><p class="muted mapNote">线条连接已登记的城市，表示行程顺序。直线估算里程以「约」标示。城市停留按可确定的日期计算。</p>
+<div id="legend" class="legend"></div><p class="muted mapNote">底图为区域示意，显示地理轮廓和主要城市。线条表示行程顺序。直线估算里程以「约」标示。城市停留按可确定的日期计算。</p>
 </section>
 <div class="below"><section class="panel" aria-labelledby="timelineTitle"><div class="heading"><div><p class="kicker">02 / TIMELINE</p><h2 id="timelineTitle">差旅时间轴</h2></div><div class="actions"><label class="fileButton">导入 JSON<input id="importTrips" type="file" accept=".json,application/json"></label><button id="exportTrips">导出备份</button></div></div><p id="importMessage" class="feedback" role="status"></p><div id="timeline"></div></section>
 <aside class="panel"><p class="kicker">03 / INSIGHTS</p><h2>交通方式</h2><p class="muted">按筛选范围内的交通段统计</p><div id="modeStats"></div><hr><h2>到访城市</h2><div id="cityStats"></div></aside></div>
