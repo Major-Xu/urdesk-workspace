@@ -1,0 +1,53 @@
+<!doctype html><html lang="zh-CN"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>差旅足迹 · 个人工作台</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="./travel.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script defer src="./travel.js"></script></head><body>
+<main>
+<nav class="top"><a href="./#home">← 个人工作台</a><span>我的差旅档案</span></nav>
+<header class="hero"><div><p class="kicker">TRAVEL FOOTPRINTS / 差旅档案</p><h1>差旅足迹</h1><p>把每一段工作旅程，留在地图与时间轴上。</p></div><button id="newTrip" class="primary">＋ 新增出差</button></header>
+<section class="metrics" aria-label="差旅统计">
+<div><span>出差次数</span><strong id="tripCount">0</strong><small>次行程</small></div><div><span>出差天数</span><strong id="dayCount">0</strong><small>天 · 重叠日期去重</small></div><div><span>到访城市</span><strong id="cityCount">0</strong><small>座城市</small></div><div><span>交通里程</span><strong id="distanceCount">0</strong><small id="distanceNote">公里</small></div></section>
+<section class="panel filters" aria-label="筛选差旅">
+<label>年度<select id="year"><option value="">全部年度</option></select></label>
+<label>月份<select id="month"><option value="">全部月份</option></select></label>
+<label>项目<select id="project"><option value="">全部项目</option></select></label>
+<label>到访城市<select id="cityFilter"><option value="">全部城市</option></select></label>
+<label>从<input type="date" id="filterStart"></label><label>至<input type="date" id="filterEnd"></label>
+<button id="clearFilters">重置</button><p id="filterMessage" class="feedback" role="status"></p></section>
+<section class="panel mapPanel" aria-labelledby="mapTitle">
+<div class="heading"><div><p class="kicker">01 / MAP</p><h2 id="mapTitle">中国差旅地图</h2></div><div class="actions">
+<label class="sr" for="locateCity">定位已到访城市</label><select id="locateCity"><option value="">定位已到访城市</option></select>
+<button id="setCoordinates">城市坐标</button><button id="resetMap">全国总览</button><button id="playRoutes" class="primary">▷ 播放轨迹</button></div></div>
+<div class="mapWrap"><div id="map" aria-label="中国交互地图"></div><div id="mapMessage" class="mapMessage" role="status"></div></div>
+<div id="legend" class="legend"></div><p class="muted mapNote">线条连接已登记的城市，表示行程顺序。直线估算里程以「约」标示。城市停留按可确定的日期计算。</p>
+</section>
+<div class="below"><section class="panel" aria-labelledby="timelineTitle"><div class="heading"><div><p class="kicker">02 / TIMELINE</p><h2 id="timelineTitle">差旅时间轴</h2></div><div class="actions"><label class="fileButton">导入 JSON<input id="importTrips" type="file" accept=".json,application/json"></label><button id="exportTrips">导出备份</button></div></div><p id="importMessage" class="feedback" role="status"></p><div id="timeline"></div></section>
+<aside class="panel"><p class="kicker">03 / INSIGHTS</p><h2>交通方式</h2><p class="muted">按筛选范围内的交通段统计</p><div id="modeStats"></div><hr><h2>到访城市</h2><div id="cityStats"></div></aside></div>
+<p class="foot">差旅数据和照片保存在此浏览器，可通过 JSON 备份迁移。公开设备台账不包含差旅记录。</p>
+</main>
+<dialog id="editor" aria-labelledby="editorTitle"><form id="tripForm">
+<div class="heading dialogHead"><h2 id="editorTitle">新增出差</h2><button type="button" data-close>关闭</button></div>
+<div class="formBody">
+<p class="kicker">01 / 基础信息</p>
+<div class="formGrid">
+<label class="wide">出差标题<input name="title" maxlength="100" required placeholder="例如 上海项目现场验收"></label>
+<label>出发日期<input name="start" type="date" required></label><label>返回日期<input name="end" type="date" required></label>
+<label>出发城市<input name="origin" list="cityOptions" maxlength="30" required placeholder="合肥"></label><label>目的地城市<input name="destination" list="cityOptions" maxlength="30" required placeholder="上海"></label>
+<label>经过城市（按顺序）<input name="via" maxlength="300" placeholder="南京、苏州"><small>用顿号或逗号分隔</small></label>
+<label>出差状态<select name="status"><option>计划中</option><option>进行中</option><option selected>已完成</option></select></label>
+<label>项目名称<input name="project" maxlength="80"></label><label>出差事由<input name="purpose" maxlength="240"></label>
+</div>
+<p class="kicker sectionTitle">02 / 交通行程</p><p class="muted">按出行顺序填写各段，返程也可单独添加。留空的里程按城市直线距离估算。</p>
+<div id="legs"></div><div class="actions legsActions"><button type="button" id="generateLegs">按城市生成交通段</button><button type="button" id="addLeg">＋ 添加交通段</button></div>
+<p class="kicker sectionTitle">03 / 个人记录</p>
+<div class="formGrid"><label>住宿酒店<input name="hotel" maxlength="180"></label><label>当地美食及景点<input name="places" maxlength="500"></label><label class="wide">出差日记<textarea name="diary" rows="3" maxlength="3000"></textarea></label><label>个人感悟<textarea name="reflection" rows="2" maxlength="1600"></textarea></label><label>备注<textarea name="note" rows="2" maxlength="1600"></textarea></label>
+<label class="wide">城市照片<input id="tripPhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple><small>每次出差最多 6 张，浏览器压缩后随备份保存</small></label></div>
+<div id="photoDraft" class="photos"></div><p id="formMessage" class="feedback" role="alert"></p></div>
+<div class="dialogFoot"><button type="button" data-close>取消</button><button id="saveTrip" class="primary">保存出差</button></div>
+</form></dialog>
+<dialog id="details" aria-labelledby="detailsTitle"><div class="heading dialogHead"><h2 id="detailsTitle"></h2><button type="button" id="closeDetails">关闭</button></div><div id="detailsBody" class="formBody"></div></dialog>
+<dialog id="coordinateDialog" aria-labelledby="coordTitle"><form id="coordinateForm"><div class="heading dialogHead"><h2 id="coordTitle">设置城市坐标</h2><button type="button" id="closeCoordinates">关闭</button></div><div class="formBody"><p class="muted">为未内置的城市添加地图位置。使用十进制度 WGS84 坐标。</p><div class="formGrid"><label class="wide">城市<input name="city" required maxlength="30" list="cityOptions"></label><label>纬度<input name="lat" type="number" min="-90" max="90" step="any" required></label><label>经度<input name="lng" type="number" min="-180" max="180" step="any" required></label></div><p id="coordinateMessage" class="feedback" role="alert"></p></div><div class="dialogFoot"><button class="primary">保存坐标</button></div></form></dialog>
+<datalist id="cityOptions"></datalist>
+</body></html>
