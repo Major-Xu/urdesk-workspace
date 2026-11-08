@@ -215,6 +215,7 @@ function removeRecord(record) {
     localStorage.setItem(storageKey, JSON.stringify(readRecords().filter(item => item.id !== record.id)));
     if (editId === record.id) resetEditor();
     renderRecords();
+    dispatchEvent(new Event("reimbursement-records-changed"));
     setStatus("recordsStatus", "已删除发票记录。");
   } catch {
     setStatus("recordsStatus", "删除失败，请检查浏览器存储权限。", true);
@@ -253,6 +254,7 @@ form.addEventListener("submit", event => {
     localStorage.setItem(storageKey, JSON.stringify(records));
     resetEditor();
     renderRecords();
+    dispatchEvent(new Event("reimbursement-records-changed"));
     setStatus("formStatus", "发票 " + number + " 已保存。");
   } catch {
     setStatus("formStatus", "保存失败，请检查浏览器存储权限或可用空间。", true);
@@ -296,10 +298,8 @@ function pdfText(items) {
   }).join("\n");
 }
 
-async function readFile(file, itinerary) {
+function createOcrReader(progress) {
   let worker;
-  let pdf;
-  const progress = message => setStatus("recognitionStatus", message);
   async function recognizeImage(image) {
     if (!worker) {
       progress("正在加载中文识别模型…");
@@ -312,11 +312,26 @@ async function readFile(file, itinerary) {
           if (message.status === "recognizing text") progress("正在识别文字… " + Math.round(message.progress * 100) + "%");
         },
       });
-      await worker.setParameters({ tessedit_pageseg_mode: ocr.PSM.AUTO, preserve_interword_spaces: "1" });
+      try {
+        await worker.setParameters({ tessedit_pageseg_mode: ocr.PSM.AUTO, preserve_interword_spaces: "1" });
+      } catch (error) {
+        await close();
+        throw error;
+      }
     }
     return (await worker.recognize(image)).data.text;
   }
 
+  async function close() {
+    const current = worker;
+    worker = undefined;
+    await current?.terminate().catch(() => {});
+  }
+  return { recognizeImage, close };
+}
+
+async function readFile(file, itinerary, progress, { recognizeImage }) {
+  let task;
   try {
     if (!/\.pdf$/i.test(file.name)) {
       const bitmap = await createImageBitmap(file);
@@ -339,11 +354,11 @@ async function readFile(file, itinerary) {
       .catch(error => { pdfLibrary = null; throw error; });
     const library = await pdfLibrary;
     library.GlobalWorkerOptions.workerSrc = pdfBase + "legacy/build/pdf.worker.min.mjs";
-    const task = library.getDocument({
+    task = library.getDocument({
       data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false,
       cMapUrl: pdfBase + "cmaps/", cMapPacked: true, standardFontDataUrl: pdfBase + "standard_fonts/",
     });
-    pdf = await task.promise;
+    const pdf = await task.promise;
     if (pdf.numPages > 5) throw new Error("too_many_pages");
     const pages = [];
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -368,9 +383,12 @@ async function readFile(file, itinerary) {
     }
     return pages.join("\n\n");
   } finally {
-    await pdf?.destroy();
-    await worker?.terminate();
+    await task?.destroy().catch(() => {});
   }
+}
+
+function supportedFile(file) {
+  return /\.(pdf|png|jpe?g|webp)$/i.test(file.name) && file.size > 0 && file.size <= 20 * 1024 * 1024;
 }
 
 async function importFile(event, itinerary) {
@@ -378,7 +396,7 @@ async function importFile(event, itinerary) {
   const file = input.files[0];
   input.value = "";
   if (!file || busy) return;
-  if (!/\.(pdf|png|jpe?g|webp)$/i.test(file.name) || file.size > 20 * 1024 * 1024 || !file.size) {
+  if (!supportedFile(file)) {
     setStatus("recognitionStatus", "请选择 20 MB 以内的 PDF、JPG、PNG 或 WebP。", true);
     return;
   }
@@ -387,11 +405,13 @@ async function importFile(event, itinerary) {
       fields.status.value !== states[0]) && !confirm("读取新发票会替换当前未保存的表单内容，继续吗？")) return;
   if (!itinerary) resetEditor();
   busy = true;
-  const controls = [...form.elements, $("invoiceFile"), $("itineraryFile")];
+  const controls = [...form.elements, $("invoiceFile"), $("itineraryFile"), $("batchFiles")];
   controls.forEach(control => { control.disabled = true; });
   setStatus("recognitionStatus", "正在读取 " + file.name + "…");
+  const progress = message => setStatus("recognitionStatus", message);
+  const ocr = createOcrReader(progress);
   try {
-    const text = await readFile(file, itinerary);
+    const text = await readFile(file, itinerary, progress, ocr);
     $("recognizedText").textContent = text;
     $("recognizedDetails").hidden = !text.trim();
     const result = parseInvoice(text);
@@ -418,6 +438,7 @@ async function importFile(event, itinerary) {
     setStatus("recognitionStatus", error.message === "too_many_pages" ? "PDF 超过 5 页，请拆分后再试。" :
       "读取失败。请确认文件清晰、PDF 未加密且网络可用，也可以手动填写。", true);
   } finally {
+    await ocr.close();
     busy = false;
     controls.forEach(control => { control.disabled = false; });
   }

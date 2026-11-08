@@ -9,9 +9,11 @@
 :root{color-scheme:light;--ink:#162923;--muted:#536760;--line:#dbe5db;--paper:#fff;--bg:#f3f6f1;--accent:#225c46;--dark:#173b30;--lime:#c8ee83;--soft:#edf4e9;font:15px/1.5 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}main{max-width:1180px;margin:auto;padding:18px clamp(14px,4vw,36px) 36px}a{color:var(--accent)}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.65}button,.file-label{border:1px solid var(--line);border-radius:9px;padding:8px 13px;background:var(--paper);color:var(--ink);font-weight:650}.primary,.file-label{background:var(--dark);border-color:var(--dark);color:white}button:hover:not(:disabled),.file-label:hover{filter:brightness(.96)}:focus-visible{outline:2px solid #4c8b6e;outline-offset:3px}[hidden]{display:none!important}
 .top,.heading,.actions,.filters{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px}.top{margin-bottom:16px;font-size:13px}.top a{text-decoration:none;font-weight:700}.top span,.muted,small{color:var(--muted)}.hero{background:var(--dark);color:white;border-radius:20px;padding:clamp(22px,5vw,42px)}.hero span{color:var(--lime);font-weight:800;font-size:11px;letter-spacing:.18em}.hero p{margin:7px 0 0;color:#edf7ee}h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,5vw,44px);line-height:1.2;margin:6px 0}h2{font-size:19px}h3{font-size:15px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}.metric,.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:clamp(12px,2.4vw,20px)}.metric span,.badge{font-size:12px;color:var(--muted)}.metric strong{display:block;font-size:clamp(15px,3vw,23px);overflow-wrap:anywhere}.panel+.panel{margin-top:14px}.heading{margin-bottom:12px}.badge{background:var(--soft);padding:4px 9px;border-radius:20px}.intake{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:16px}.upload{background:var(--soft);border-radius:12px;padding:16px;align-self:start}.upload p,.hint{font-size:13px;margin-top:6px}.upload .actions{justify-content:flex-start;margin-top:12px}.file-label{display:inline-block;cursor:pointer}.upload input[type=file]{position:absolute;inline-size:1px;block-size:1px;opacity:0}.file-label:focus-within{outline:2px solid #4c8b6e;outline-offset:3px}.file-label:has(input:disabled){opacity:.65;cursor:wait}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid label{display:grid;gap:3px;font-size:13px;align-content:start}.wide{grid-column:1/-1}input:not([type=file]),select{width:100%;min-width:0;background:white;color:var(--ink);border:1px solid #bccdc1;border-radius:8px;padding:8px}.route{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:var(--soft);border-radius:10px;padding:10px}.editor-actions{justify-content:flex-end;margin-top:12px}.status{min-height:20px;font-size:13px;overflow-wrap:anywhere}.error{color:#a32e29}.filters{justify-content:flex-start;margin-bottom:10px}.filters input,.filters select{width:auto;max-width:100%}.table-wrap{overflow:auto}table{width:100%;min-width:740px;border-collapse:collapse;text-align:left;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:9px;vertical-align:top;overflow-wrap:anywhere}th{background:var(--soft);white-space:nowrap}.number{font-variant-numeric:tabular-nums;white-space:nowrap}.row-actions{display:flex;gap:5px}.row-actions button{padding:5px 8px;font-size:12px}.empty{color:var(--muted);padding:14px 0}.danger{color:#a32e29}details{margin-top:8px;font-size:13px}summary{cursor:pointer}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;max-height:190px;overflow:auto;background:white;padding:8px;border-radius:8px}
+.batch-files input,.batch-files select{font-size:13px;padding:5px 7px}.batch-files table{min-width:930px}.batch-files td:first-child{max-width:185px}.batch-files td:nth-child(2){min-width:170px}.batch-files td:nth-child(3){min-width:98px}.batch-files td:nth-child(5){min-width:148px}.batch-files input+input{margin-top:4px}.batch-actions{justify-content:flex-end;margin:12px 0 5px}.batch-actions button:disabled{cursor:default}
 @media(max-width:720px){.intake{grid-template-columns:1fr}.panel+.panel{margin-top:10px}}
 </style>
-<script src="./reimbursement.js?v=2" defer></script>
+<script src="./reimbursement.js?v=3" defer></script>
+<script src="./reimbursement-batch.js?v=1" defer></script>
 </head>
 <body>
 <main>
@@ -30,6 +32,7 @@
       <p class="muted">支持 PDF、JPG、PNG、WebP。一次读取一张票，最多 5 页、20 MB。</p>
       <div class="actions">
         <label class="file-label">选择发票<input id="invoiceFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp"></label>
+        <label class="file-label">批量上传并重命名<input id="batchFiles" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple></label>
         <label class="file-label" id="itineraryPicker" hidden>补充打车行程单<input id="itineraryFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp"></label>
       </div>
       <p class="status" id="recognitionStatus" role="status">也可以直接手动填写。</p>
@@ -54,6 +57,16 @@
       <p id="formStatus" class="status" role="status"></p>
     </form>
   </div>
+</section>
+<section class="panel batch-files" id="batchPanel" aria-labelledby="batchTitle" hidden>
+  <div class="heading"><h2 id="batchTitle">批量识别与重命名</h2><span class="badge" id="batchCount"></span></div>
+  <p class="muted hint">每批最多 20 份、合计 100 MB，每份一张发票。核对票号后可下载按票号命名的原件。识别结果可修改，批量保存只处理信息完整且票号唯一的记录。</p>
+  <div class="table-wrap" tabindex="0" aria-label="批量核对发票"><table>
+    <thead><tr><th>原文件</th><th>发票号码</th><th>价税合计（元）</th><th>类别</th><th>打车路线</th><th>识别与登记状态</th><th>操作</th></tr></thead>
+    <tbody id="batchRows"></tbody>
+  </table></div>
+  <div class="actions batch-actions"><button type="button" id="clearBatch">清空清单</button><button type="button" id="downloadZip">下载重命名 ZIP</button><button type="button" class="primary" id="saveBatch">批量保存记录</button></div>
+  <p id="batchStatus" class="status" role="status"></p>
 </section>
 <section class="panel" aria-labelledby="recordsTitle">
   <div class="heading"><h2 id="recordsTitle">报销记录</h2><span class="badge">本机浏览器</span></div>
