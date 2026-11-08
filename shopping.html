@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>购物决策 · 个人工作台</title>
+<style>
+:root{color-scheme:light;--bg:#f4f6f2;--panel:#fff;--ink:#152b23;--muted:#52685c;--line:#dbe5db;--green:#205642;--hero:#14392d;--accent:#d5f28d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"PingFang SC",sans-serif}a{color:var(--green)}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.55}
+.shell{max-width:1170px;margin:auto;padding:0 clamp(16px,4vw,36px) 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:19px 0}.top a{text-decoration:none;font-weight:650}.tag{font-size:12px;color:var(--muted)}
+.hero{background:var(--hero);color:#f4fff5;border-radius:25px;padding:clamp(22px,5vw,54px);overflow:hidden}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;color:var(--accent)}h1{font-size:clamp(30px,6vw,53px);line-height:1.12;margin:9px 0 10px}.hero p{margin:0 0 21px;color:#e0eee5}.search{display:flex;align-items:stretch;gap:10px}.search textarea{min-height:88px;flex:1;resize:vertical;border-radius:13px}.primary{background:var(--accent);color:var(--hero);border:0;font-weight:800}.search .primary{align-self:stretch;min-width:112px}
+button,.button{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:8px 13px;min-height:38px}.search .primary{background:var(--accent);border:0}.examples{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.examples button{font-size:12px;color:#eef9ee;background:#ffffff12;border-color:#ffffff30}.examples button:hover{background:#ffffff24}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:clamp(15px,2.6vw,24px);margin-top:15px}
+.notice{margin:12px 0;color:var(--muted);font-size:13px}.columns{display:grid;grid-template-columns:1fr 1fr;gap:14px}.heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}h2{font-size:19px;margin:0 0 8px}h3{font-size:15px;margin:13px 0 5px}.muted{font-size:13px;color:var(--muted);margin:5px 0}.chips,.shops{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.chip{display:inline-block;background:#edf4e9;border-radius:99px;padding:3px 10px;font-size:12px}.shops a{font-size:13px}
+label{display:grid;gap:4px;font-size:13px}input,textarea,select{width:100%;border:1px solid #b7cabd;border-radius:8px;background:#fff;color:var(--ink);padding:8px;min-width:0}input[type=checkbox]{width:auto;align-self:center}.check{display:flex;align-items:center;gap:6px}.form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}.wide{grid-column:1/-1}summary{cursor:pointer;font-weight:700;color:var(--green)}details{margin-top:10px}textarea{resize:vertical}.table-scroll{overflow:auto;margin-top:10px}table{border-collapse:collapse;width:100%;min-width:680px;text-align:left;font-size:13px}th,td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f1f6ef}td:last-child{white-space:nowrap}.evidence{padding-left:20px;margin:9px 0}.evidence li{margin:7px 0;overflow-wrap:anywhere}.empty{color:var(--muted);padding:10px 0;font-size:13px}.decision{font-weight:650;line-height:1.7;margin:7px 0}.badge{border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:11px;color:var(--muted)}:focus-visible{outline:2px solid #3e7963;outline-offset:2px}[hidden]{display:none!important}
+@media(max-width:650px){.columns,.form-grid{grid-template-columns:1fr}.search{flex-direction:column}.search .primary{align-self:stretch}.top .tag{display:none}}
+</style>
+<script src="./shopping.js" defer></script>
+</head>
+<body><main class="shell">
+<header class="top"><a href="./#home">← 个人工作台</a><span class="tag">购物决策 · 本机工作区</span></header>
+<section class="hero" aria-labelledby="shoppingTitle">
+  <span class="eyebrow">URDESK · SHOPPING LAB</span><h1 id="shoppingTitle">先想清楚，再买。</h1>
+  <p>输入预算、用途和最看重的因素，把同款报价、产品证据和用户反馈放在一起比较。</p>
+  <form id="shoppingSearch" class="search">
+    <textarea id="shoppingNeed" aria-label="描述购物需求" maxlength="500" placeholder="例如：预算 4000 元以内，想买一款拍照好的手机" required></textarea>
+    <button class="primary" type="submit">分析需求 →</button>
+  </form>
+  <div class="examples" aria-label="需求示例"><button type="button">4000 元以内，拍照好的手机</button><button type="button">帮我挑性价比高的 MacBook</button><button type="button">预算 1000 元，通勤降噪耳机</button><button type="button">想买一款耐用的扫地机器人</button></div>
+</section>
+<p class="notice">当前使用本地规则分析需求和评价。平台入口用于查找商品，录入来源明确的报价后才会参与比较。购物记录保存在这个浏览器。</p>
+<div class="columns">
+<section class="panel"><div class="heading"><h2>你的购买条件</h2><span class="badge">01 · 需求</span></div>
+<p id="needSummary" class="muted" role="status">输入一句话开始。</p><div id="needChips" class="chips"></div>
+<label>可调整平台搜索关键词<input id="platformTerm" maxlength="100" placeholder="例如 手机 256GB"></label>
+</section>
+<section class="panel"><div class="heading"><h2>查找可比商品</h2><span class="badge">02 · 平台</span></div>
+<p class="muted">先核对型号、版本、容量、成色及地区。补贴与会员价需按自己的资格确认。</p><div id="shops" class="shops"></div></section>
+</div>
+<section class="panel" aria-labelledby="compareTitle"><div class="heading"><h2 id="compareTitle">同款到手价</h2><span class="badge">03 · 报价与条件</span></div>
+<p class="muted">只在同一品牌、型号、完整配置及成色内比价。未确认或超过 48 小时的报价保留供参考。</p>
+<details id="quoteEditor"><summary>添加商品报价</summary><form id="quoteForm">
+<div class="form-grid">
+<label>品牌<input name="brand" maxlength="40" required placeholder="例如 Apple"></label>
+<label>准确型号<input name="model" maxlength="70" required placeholder="例如 iPhone 16"></label>
+<label>完整配置和版本<input name="config" maxlength="100" required placeholder="例如 国行 256GB"></label>
+<label>成色<select name="condition"><option>全新</option><option>二手</option><option>官翻</option></select></label>
+<label>平台<select name="platform"><option>京东</option><option>淘宝 / 天猫</option><option>拼多多</option><option>苏宁易购</option><option>品牌官网</option><option>其他</option></select></label>
+<label>店铺 / 信誉信息<input name="seller" maxlength="100" placeholder="例如 官方旗舰店"></label>
+<label>商品报价（元）<input name="base" type="number" min="0" max="9999999" step="0.01" required></label>
+<label>确认可用优惠券（元）<input name="coupon" type="number" min="0" max="9999999" step="0.01"></label>
+<label>确认可用补贴（元）<input name="subsidy" type="number" min="0" max="9999999" step="0.01"></label>
+<label>运费（元，包邮填 0）<input name="shipping" type="number" min="0" max="9999999" step="0.01"></label>
+<label>报价核对时间<input name="checked" type="datetime-local"></label>
+<label>购买链接<input name="url" type="url" maxlength="1000" required placeholder="https://"></label>
+<label>预计额外使用成本（元，选填）<input name="running" type="number" min="0" max="9999999" step="0.01"></label>
+<label>售后、退换或费用说明<input name="service" maxlength="200" placeholder="例如 保修一年；耗材约 200 元/年"></label>
+<label class="check"><input name="confirmed" type="checkbox">已核对该版本和优惠资格</label>
+</div><button type="submit">保存报价</button></form></details>
+<div id="quotes" aria-live="polite"></div></section>
+<section class="panel" aria-labelledby="qualityTitle"><div class="heading"><h2 id="qualityTitle">质量与评价证据</h2><span class="badge">04 · 证据分析</span></div>
+<p class="muted">把官方规格、第三方测评和用户评价分开看。品牌宣传不能单独证明长期可靠性。</p>
+<details><summary>添加规格、评测或售后证据</summary><form id="evidenceForm"><div class="form-grid">
+<label>对应商品或版本<input name="product" maxlength="100" required></label>
+<label>证据类型<select name="kind"><option>官方资料</option><option>第三方专业测评</option><option>用户经验</option></select></label>
+<label>分析维度<select name="aspect"><option>参数与性能</option><option>做工与用料</option><option>耐用性与常见故障</option><option>售后与退换</option><option>维修与使用成本</option></select></label>
+<label>结论倾向<select name="signal"><option>信息</option><option>优点</option><option>顾虑</option></select></label>
+<label>来源链接<input name="url" type="url" maxlength="1000" required placeholder="https://"></label>
+<label class="wide">可核对的事实或摘要<textarea name="text" maxlength="700" rows="2" required></textarea></label>
+</div><button type="submit">保存证据</button></form></details>
+<div id="evidenceList"></div>
+<details><summary>分析已有评价样本</summary><form id="reviewsForm"><div class="form-grid">
+<label>对应商品或版本<input name="product" maxlength="100" required></label>
+<label>评价平台<input name="platform" maxlength="40" required placeholder="例如 京东"></label>
+<label>评价来源链接<input name="url" type="url" maxlength="1000" required placeholder="https://"></label>
+<label class="wide">每行一条你有权使用的评价<textarea name="reviews" maxlength="18000" rows="5" required placeholder="例：通勤降噪不错，但佩戴一小时有点夹耳。"></textarea></label>
+</div><button type="submit">分析这组评价</button></form></details>
+<div id="reviewsResult" aria-live="polite"></div></section>
+<section class="panel" aria-labelledby="decisionTitle"><div class="heading"><h2 id="decisionTitle">购买建议</h2><span class="badge">05 · 决策</span></div><p id="decision" class="decision" role="status"></p><p class="muted">候选建议基于已录入、可核对的报价与证据。不同配置分别展示，结算页为准。</p></section>
+<p class="notice" id="shoppingStatus" role="status"></p>
+</main></body></html>
