@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>发票报销 · 个人工作台</title>
+<style>
+:root{color-scheme:light;--ink:#162923;--muted:#536760;--line:#dbe5db;--paper:#fff;--bg:#f3f6f1;--accent:#225c46;--dark:#173b30;--lime:#c8ee83;--soft:#edf4e9;font:15px/1.5 system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}main{max-width:1180px;margin:auto;padding:18px clamp(14px,4vw,36px) 36px}a{color:var(--accent)}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.65}button,.file-label{border:1px solid var(--line);border-radius:9px;padding:8px 13px;background:var(--paper);color:var(--ink);font-weight:650}.primary,.file-label{background:var(--dark);border-color:var(--dark);color:white}button:hover:not(:disabled),.file-label:hover{filter:brightness(.96)}:focus-visible{outline:2px solid #4c8b6e;outline-offset:3px}[hidden]{display:none!important}
+.top,.heading,.actions,.filters{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px}.top{margin-bottom:16px;font-size:13px}.top a{text-decoration:none;font-weight:700}.top span,.muted,small{color:var(--muted)}.hero{background:var(--dark);color:white;border-radius:20px;padding:clamp(22px,5vw,42px)}.hero span{color:var(--lime);font-weight:800;font-size:11px;letter-spacing:.18em}.hero p{margin:7px 0 0;color:#edf7ee}h1,h2,h3,p{margin:0}h1{font-size:clamp(29px,5vw,44px);line-height:1.2;margin:6px 0}h2{font-size:19px}h3{font-size:15px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}.metric,.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:clamp(12px,2.4vw,20px)}.metric span,.badge{font-size:12px;color:var(--muted)}.metric strong{display:block;font-size:clamp(15px,3vw,23px);overflow-wrap:anywhere}.panel+.panel{margin-top:14px}.heading{margin-bottom:12px}.badge{background:var(--soft);padding:4px 9px;border-radius:20px}.intake{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.65fr);gap:16px}.upload{background:var(--soft);border-radius:12px;padding:16px;align-self:start}.upload p,.hint{font-size:13px;margin-top:6px}.upload .actions{justify-content:flex-start;margin-top:12px}.file-label{display:inline-block;cursor:pointer}.upload input[type=file]{position:absolute;inline-size:1px;block-size:1px;opacity:0}.file-label:focus-within{outline:2px solid #4c8b6e;outline-offset:3px}.file-label:has(input:disabled){opacity:.65;cursor:wait}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid label{display:grid;gap:3px;font-size:13px;align-content:start}.wide{grid-column:1/-1}input:not([type=file]),select{width:100%;min-width:0;background:white;color:var(--ink);border:1px solid #bccdc1;border-radius:8px;padding:8px}.route{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:var(--soft);border-radius:10px;padding:10px}.editor-actions{justify-content:flex-end;margin-top:12px}.status{min-height:20px;font-size:13px;overflow-wrap:anywhere}.error{color:#a32e29}.filters{justify-content:flex-start;margin-bottom:10px}.filters input,.filters select{width:auto;max-width:100%}.table-wrap{overflow:auto}table{width:100%;min-width:740px;border-collapse:collapse;text-align:left;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:9px;vertical-align:top;overflow-wrap:anywhere}th{background:var(--soft);white-space:nowrap}.number{font-variant-numeric:tabular-nums;white-space:nowrap}.row-actions{display:flex;gap:5px}.row-actions button{padding:5px 8px;font-size:12px}.empty{color:var(--muted);padding:14px 0}.danger{color:#a32e29}details{margin-top:8px;font-size:13px}summary{cursor:pointer}pre{font:inherit;white-space:pre-wrap;overflow-wrap:anywhere;max-height:190px;overflow:auto;background:white;padding:8px;border-radius:8px}
+@media(max-width:720px){.intake{grid-template-columns:1fr}.panel+.panel{margin-top:10px}}
+</style>
+<script src="./reimbursement.js" defer></script>
+</head>
+<body>
+<main>
+<header class="top"><a href="./#home">← 返回个人工作台</a><span>发票与报销</span></header>
+<section class="hero"><span>URDESK · REIMBURSEMENTS</span><h1>发票报销</h1><p>从发票提取号码、金额和类别，核对后登记报销。</p></section>
+<section class="metrics" aria-label="报销汇总">
+  <div class="metric"><span>已登记发票</span><strong id="totalCount">0 张</strong></div>
+  <div class="metric"><span>待报销及已提交</span><strong id="pendingAmount">¥0.00</strong></div>
+  <div class="metric"><span>已报销</span><strong id="paidAmount">¥0.00</strong></div>
+</section>
+<section class="panel" aria-labelledby="editorTitle">
+  <div class="heading"><h2 id="editorTitle">登记发票</h2><span class="badge">识别后可修改</span></div>
+  <div class="intake">
+    <div class="upload">
+      <h3>识别发票</h3>
+      <p class="muted">支持 PDF、JPG、PNG、WebP。一次读取一张票，最多 5 页、20 MB。</p>
+      <div class="actions">
+        <label class="file-label">选择发票<input id="invoiceFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp"></label>
+        <label class="file-label" id="itineraryPicker" hidden>补充打车行程单<input id="itineraryFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp"></label>
+      </div>
+      <p class="status" id="recognitionStatus" role="status">也可以直接手动填写。</p>
+      <p class="muted">识别在浏览器完成，首次识图需联网加载模型。原文件不上传，已保存的字段留在此浏览器。</p>
+      <details id="recognizedDetails" hidden><summary>查看识别原文</summary><pre id="recognizedText"></pre></details>
+    </div>
+    <form id="invoiceForm">
+      <div class="grid">
+        <label>发票号码<input name="number" inputmode="numeric" pattern="[0-9]{8}|[0-9]{20}" maxlength="20" placeholder="8 位或 20 位" required></label>
+        <label>价税合计（元）<input name="amount" inputmode="decimal" placeholder="0.00" required></label>
+        <label>发票类别<select name="category" required><option value="">请选择</option><option>打车</option><option>其他交通</option><option>餐饮</option><option>住宿</option><option>办公用品</option><option>其他</option></select></label>
+        <label>开票日期（选填）<input name="date" type="date"></label>
+        <div id="routeFields" class="route wide" hidden>
+          <label>出发地<input name="start" maxlength="150" placeholder="票面或行程单上的上车地点"></label>
+          <label>终点<input name="end" maxlength="150" placeholder="票面或行程单上的下车地点"></label>
+          <small class="wide">票面缺少地点时，可补充行程单。多段行程请手动核对对应路段。</small>
+        </div>
+        <label>报销状态<select name="status"><option>待报销</option><option>已提交</option><option>已报销</option></select></label>
+        <label>备注（选填）<input name="note" maxlength="200" placeholder="例如 差旅报销"></label>
+      </div>
+      <div class="actions editor-actions"><button type="button" id="resetInvoice">清空</button><button class="primary" id="saveInvoice">保存发票</button></div>
+      <p id="formStatus" class="status" role="status"></p>
+    </form>
+  </div>
+</section>
+<section class="panel" aria-labelledby="recordsTitle">
+  <div class="heading"><h2 id="recordsTitle">报销记录</h2><span class="badge">本机浏览器</span></div>
+  <div class="filters">
+    <input id="recordSearch" type="search" aria-label="搜索发票号码或地点" placeholder="搜索发票号码或地点">
+    <select id="statusFilter" aria-label="筛选报销状态"><option value="">全部状态</option><option>待报销</option><option>已提交</option><option>已报销</option></select>
+  </div>
+  <div class="table-wrap" tabindex="0" aria-label="报销记录表格"><table id="recordsTable" hidden>
+    <thead><tr><th>发票号码</th><th>开票日期</th><th>类别</th><th>价税合计</th><th>打车路线</th><th>状态</th><th>备注</th><th>操作</th></tr></thead>
+    <tbody id="invoiceRows"></tbody>
+  </table></div>
+  <p id="recordsEmpty" class="empty">暂无报销记录。</p>
+  <p id="recordsStatus" class="status" role="status"></p>
+</section>
+</main>
+</body>
+</html>
