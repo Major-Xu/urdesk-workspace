@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>公开设备台账 · Urdesk</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f3f6f1;color:#182b24;font:16px/1.5 system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:clamp(20px,6vw,58px)}
+    header{padding:clamp(22px,5vw,42px);background:#163b2f;color:#f4f8f2;border-radius:22px}.tag{color:#c8f175;font-size:.8rem;font-weight:750;letter-spacing:.15em}
+    h1{margin:6px 0 8px;font-size:clamp(26px,5vw,42px)}header p{margin:0;color:#d9e8df}
+    .card{margin-top:20px;padding:clamp(14px,3vw,26px);background:white;border:1px solid #dce6da;border-radius:18px}
+    #publicDeviceMessage{margin:0;color:#495f54}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;margin-top:15px;text-align:left}th,td{padding:12px;border-bottom:1px solid #e1e9df;white-space:nowrap}th{background:#eff4ed}tr:last-child td{border-bottom:0}
+  </style>
+  <script src="./public-ledger-config.js" defer></script>
+  <script src="./public-ledger.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><span class="tag">URDESK</span><h1>公开设备台账</h1><p>查看站主发布的设备记录和估值。</p></header>
+    <section class="card" aria-label="公开设备">
+      <p id="publicDeviceMessage" role="status">公开台账尚未连接。</p>
+      <div class="scroll">
+        <table id="publicDeviceTable" hidden>
+          <thead><tr><th>设备</th><th>品牌</th><th>类别</th><th>状态</th><th>购入日期</th><th>处置日期</th><th>发布时估值</th></tr></thead>
+          <tbody id="publicDeviceRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

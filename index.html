@@ -168,6 +168,21 @@
         <div class="settings-controls"><span class="settings-theme"><span class="theme-swatch" id="settingsThemeSwatch" aria-hidden="true"></span><span id="settingsThemeName"></span></span><button id="themeButton" class="button" type="button">更改主题颜色</button></div>
       </div>
     </section>
+    <section class="panel settings-card" aria-labelledby="publicLedgerTitle">
+      <h2 id="publicLedgerTitle">公开设备台账</h2>
+      <p class="sub">公开页显示设备名称、品牌、类别、状态、购入和处置日期以及估值。访客无需登录。</p>
+      <form id="publicLedgerSignIn" class="settings-controls" method="post" hidden>
+        <label>邮箱 <input class="field" type="email" id="publishEmail" autocomplete="username" required></label>
+        <label>密码 <input class="field" type="password" id="publishPassword" autocomplete="current-password" required></label>
+        <button class="button primary" type="submit">登录发布</button>
+      </form>
+      <div class="settings-controls">
+        <button class="button primary" id="publishLedger" type="button" hidden>发布当前台账</button>
+        <button class="button" id="publishSignOut" type="button" hidden>退出发布</button>
+        <a class="button" href="./ledger.html">打开公开页</a>
+      </div>
+      <p class="settings-status" id="publishLedgerStatus" role="status">公开发布服务尚未连接。</p>
+    </section>
     <section class="panel settings-card" aria-labelledby="fullBackupTitle">
       <h2 id="fullBackupTitle">全量备份与恢复</h2>
       <div class="settings-row">
@@ -556,7 +571,7 @@ function notify(message) {
   $("notice").hidden = false;
   noticeTimer = setTimeout(() => { $("notice").hidden = true; },4200);
 }
-function save(list,message) {
+function save(list,message,publish=true) {
   personal = list;
   let persisted = false;
   try {
@@ -568,6 +583,7 @@ function save(list,message) {
   }
   render();
   notify(persisted ? message : "本次修改仅保留在页面中，请导出备份。");
+  if (persisted && publish) window.urdeskPublishDeviceChanges?.();
 }
 function renderMetrics(list) {
   const held = list.filter(r=>!isDisposed(r));
@@ -1210,7 +1226,7 @@ $("importFile").onchange=async event=>{
   $("backup").close();
   clearFilters();
   nextAssetNo=Math.max(nextAssetNo,backup.nextAssetNo);
-  save(backup.devices,"已恢复 "+backup.devices.length+" 台设备。");
+  save(backup.devices,"已恢复 "+backup.devices.length+" 台设备。",false);
 };
 let resizeTimer;
 window.addEventListener("resize",()=>{
@@ -1796,5 +1812,7 @@ $("fullBackupFile").onchange=async event=>{
 render();
 
 </script>
+<script src="./public-ledger-config.js"></script>
+<script src="./public-ledger.js"></script>
 </body>
 </html>
