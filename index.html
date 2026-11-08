@@ -109,6 +109,10 @@
 .settings-theme{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px}
 .settings-card+.settings-card{margin-top:13px}.settings-status{margin-top:9px;font-size:12px;color:var(--muted)}.settings-status:empty{display:none}
 @media(max-width:900px){.sidebar .sidebar-settings{margin:0;padding:0;width:auto}}
+
+html[data-view="public"] .owner-only{display:none!important}
+html[data-view="public"] .sidebar .nav-group{display:grid;gap:6px}
+#publicLedgerBanner{margin:0 0 14px;padding:12px 16px}
 </style>
 </head>
 <body>
@@ -117,21 +121,21 @@
   <a class="brand" href="#home"><span class="brand-icon" data-icon="brand"></span><span><b id="workspaceBrand">个人工作台</b><small>MY WORKSPACE</small></span></a>
   <div class="side-label">工作空间</div>
   <nav class="nav" aria-label="主导航">
-    <a href="#home" data-nav="home"><span data-icon="grid"></span>工作台首页</a>
-    <a href="#tasks" data-nav="tasks"><span data-icon="checklist"></span>工作待办</a>
-    <a href="#notes" data-nav="notes"><span data-icon="note"></span>随手记</a>
-    <a href="#salary" data-nav="salary"><span data-icon="wallet"></span>工资收入</a>
+    <a class="owner-only" href="#home" data-nav="home"><span data-icon="grid"></span>工作台首页</a>
+    <a class="owner-only" href="#tasks" data-nav="tasks"><span data-icon="checklist"></span>工作待办</a>
+    <a class="owner-only" href="#notes" data-nav="notes"><span data-icon="note"></span>随手记</a>
+    <a class="owner-only" href="#salary" data-nav="salary"><span data-icon="wallet"></span>工资收入</a>
     <a href="#overview" id="ledgerNavLink"><span data-icon="laptop"></span>设备台账</a>
     <div id="ledgerNav" class="nav-group" hidden>
       <a href="#overview" data-nav="overview">资产总览</a>
       <a href="#devices" data-nav="devices">设备清单</a>
-      <button id="backupButton" type="button">设备数据备份</button>
+      <button class="owner-only" id="backupButton" type="button">设备数据备份</button>
     </div>
   </nav>
-  <nav class="nav sidebar-settings" aria-label="工作台设置">
+  <nav class="nav sidebar-settings owner-only" aria-label="工作台设置">
     <a href="#settings" data-nav="settings"><span data-icon="settings"></span>设置</a>
   </nav>
-  <div class="side-note"><strong><span data-icon="lock"></span>浏览器本地保存</strong>个人记录保存在当前浏览器中。</div>
+  <div class="side-note owner-only"><strong><span data-icon="lock"></span>浏览器本地保存</strong>个人记录保存在当前浏览器中。</div>
 </aside>
 <main class="content">
   <div class="topbar"><span><span id="workspaceBreadcrumb">个人工作台</span> <span aria-hidden="true"> / </span> <b id="breadcrumb">首页</b></span><span class="today"><span data-icon="calendar"></span><span id="today"></span></span></div>
@@ -170,7 +174,7 @@
     </section>
     <section class="panel settings-card" aria-labelledby="publicLedgerTitle">
       <h2 id="publicLedgerTitle">公开设备台账</h2>
-      <p class="sub">公开页显示设备名称、品牌、类别、状态、购入和处置日期以及估值。访客无需登录。</p>
+      <p class="sub">公开页展示整个设备台账，包括设备备注、购入明细、维修费用和处置成交价。访客无需登录。</p>
       <form id="publicLedgerSignIn" class="settings-controls" method="post" hidden>
         <label>邮箱 <input class="field" type="email" id="publishEmail" autocomplete="username" required></label>
         <label>密码 <input class="field" type="password" id="publishPassword" autocomplete="current-password" required></label>
@@ -217,7 +221,8 @@
     </div>
   </section>
   <div id="ledgerPage" hidden>
-  <header class="intro"><div><div class="overline" id="pageEyebrow">PERSONAL ASSETS</div><h1 id="pageTitle">我的设备资产</h1><p class="sub" id="pageDescription">追踪设备用了多久，以及价值如何随时间变化。</p></div><button id="add" class="button primary"><span data-icon="plus"></span>添加设备</button></header>
+  <div class="panel sub" id="publicLedgerBanner" hidden><span id="publicLedgerLoad" role="status">正在读取公开台账…</span> <a id="legacyPublicLedger" class="button" href="./ledger.html?summary=1" hidden>查看上次发布的摘要</a></div>
+  <header class="intro"><div><div class="overline" id="pageEyebrow">PERSONAL ASSETS</div><h1 id="pageTitle">我的设备资产</h1><p class="sub" id="pageDescription">追踪设备用了多久，以及价值如何随时间变化。</p></div><button id="add" class="button primary owner-only"><span data-icon="plus"></span>添加设备</button></header>
   <div class="demo" id="demo"><span><b>示例模式</b> · 当前展示 5 台示例设备，方便预览折旧效果。</span><button class="button" id="start">使用我的账本 <span data-icon="arrow"></span></button></div>
   <div id="overviewPage"><div class="metrics" id="metrics" aria-label="资产指标"></div>
   <section class="analytics" aria-label="资产分析">
@@ -352,6 +357,17 @@
 <div class="notice" id="notice" role="status" hidden></div>
 <section class="print-report" id="printReport" aria-label="设备清单打印版"></section>
 <script>
+const publicView = /(?:^|[?&])view=public(?:&|$)/.test(location.search ?? "");
+if (publicView) document.documentElement.dataset.view = "public";
+const workspaceStorage = publicView ? {
+  getItem: () => null,
+  setItem: () => { throw new Error("read-only"); },
+  removeItem: () => { throw new Error("read-only"); }
+} : {
+  getItem: key => localStorage.getItem(key),
+  setItem: (key, value) => localStorage.setItem(key, value),
+  removeItem: key => localStorage.removeItem(key)
+};
 
 "use strict";
 const $ = id => document.getElementById(id);
@@ -547,10 +563,10 @@ function readLedger(data,existing=[],next=1) {
   if (!validTradeLinks(devices)) throw new Error("invalid trade links");
   return {version:4,devices,nextAssetNo:data.nextAssetNo};
 }
-let personal = null;
+let personal = publicView ? [] : null;
 let nextAssetNo = 1;
 try {
-  const saved = localStorage.getItem(storageKey);
+  const saved = workspaceStorage.getItem(storageKey);
   if (saved!==null) {
     const ledger = readLedger(JSON.parse(saved));
     personal = ledger.devices;
@@ -572,10 +588,11 @@ function notify(message) {
   noticeTimer = setTimeout(() => { $("notice").hidden = true; },4200);
 }
 function save(list,message,publish=true) {
+  if (publicView) return;
   personal = list;
   let persisted = false;
   try {
-    localStorage.setItem(storageKey,JSON.stringify({version:4,devices:list,nextAssetNo}));
+    workspaceStorage.setItem(storageKey,JSON.stringify({version:4,devices:list,nextAssetNo}));
     $("storageWarning").hidden = true;
     persisted = true;
   } catch {
@@ -626,7 +643,7 @@ const axisValue = cents => {
 };
 function drawChart(container,list,start,end,description,valuation=valueAt,forecast=false) {
   if (!list.length) {
-    container.innerHTML='<div class="empty" style="color:var(--theme-muted-on-dark,#c9ddd2)">添加第一台设备后，这里会显示价值趋势。</div>';
+    container.innerHTML='<div class="empty" style="color:var(--theme-muted-on-dark,#c9ddd2)">'+(publicView?'暂无已发布的价值趋势。':'添加第一台设备后，这里会显示价值趋势。')+'</div>';
     return;
   }
   const w = Math.max(280, Math.round(container.clientWidth) || 480), h=179, right=w-11, top=forecast?37:16, bottom=151;
@@ -727,12 +744,13 @@ function renderList() {
     const price='<strong>实付 '+yuan(r.cost)+'</strong>'+minor("原价 "+yuan(r.original))+
       minor(r.discount?"优惠 −"+yuan(r.discount):"")+minor(r.subsidy?"国补 −"+yuan(r.subsidy):"")+
       minor(r.tradeCredit?"换新抵扣 −"+yuan(r.tradeCredit):"")+minor(old?"旧设备 "+old.assetNo:"");
-    return '<tr><td><div class="device"><span class="device-icon">'+icon(symbol)+'</span><div><button data-detail="'+r.id+'">'+escape(r.name)+'</button><small><span class="asset-number">'+r.assetNo+'</span> · '+r.category+'</small></div></div></td><td>'+escape(r.brand || '—')+'</td><td>'+r.date+minor(acquisition)+'</td><td class="price-summary">'+price+'</td><td>'+statusBadge(r)+(disposed?minor(r.disposedOn)+minor(disposal)+minor(r.saleProceeds===null?'':'收入 '+yuan(r.saleProceeds)):minor(activity?activity.start+' 起':''))+'</td><td>'+age(purchase,Math.max(purchase,day))+'<span class="minor">'+daysUsed(r)+' 天</span></td><td><span class="amount">'+yuan(value)+'</span>'+(disposed?'<span class="minor">处置日估值</span>':'<span class="progress" title="保值率 '+percent(ratio)+'"><i style="width:'+percent(ratio)+'"></i></span>')+'</td><td>'+yuan(r.cost-value)+'</td><td><div class="row-actions"><button class="button row-manage" data-detail="'+r.id+'" aria-label="'+(personal===null?"查看 ":"管理 ")+escape(r.name)+'">'+(personal===null?"查看":"管理")+'</button>'+(personal===null?'':'<button class="icon-button" data-edit="'+r.id+'" aria-label="编辑 '+escape(r.name)+'">'+icon("edit")+'</button>')+'</div></td></tr>';
-  }).join("") || '<tr><td colspan="9" class="empty">'+(list.length ? "没有符合筛选条件的设备。<br><button class='button' data-clear>清除筛选</button>" : "账本还是空的。<br><button class='button' data-add>添加第一台设备</button>")+'</td></tr>';
+    return '<tr><td><div class="device"><span class="device-icon">'+icon(symbol)+'</span><div><button data-detail="'+r.id+'">'+escape(r.name)+'</button><small><span class="asset-number">'+r.assetNo+'</span> · '+r.category+'</small></div></div></td><td>'+escape(r.brand || '—')+'</td><td>'+r.date+minor(acquisition)+'</td><td class="price-summary">'+price+'</td><td>'+statusBadge(r)+(disposed?minor(r.disposedOn)+minor(disposal)+minor(r.saleProceeds===null?'':'收入 '+yuan(r.saleProceeds)):minor(activity?activity.start+' 起':''))+'</td><td>'+age(purchase,Math.max(purchase,day))+'<span class="minor">'+daysUsed(r)+' 天</span></td><td><span class="amount">'+yuan(value)+'</span>'+(disposed?'<span class="minor">处置日估值</span>':'<span class="progress" title="保值率 '+percent(ratio)+'"><i style="width:'+percent(ratio)+'"></i></span>')+'</td><td>'+yuan(r.cost-value)+'</td><td><div class="row-actions"><button class="button row-manage" data-detail="'+r.id+'" aria-label="'+(publicView || personal===null?"查看 ":"管理 ")+escape(r.name)+'">'+(publicView || personal===null?"查看":"管理")+'</button>'+(publicView || personal===null?'':'<button class="icon-button" data-edit="'+r.id+'" aria-label="编辑 '+escape(r.name)+'">'+icon("edit")+'</button>')+'</div></td></tr>';
+  }).join("") || '<tr><td colspan="9" class="empty">'+(list.length ? "没有符合筛选条件的设备。<br><button class='button' data-clear>清除筛选</button>" : publicView ? "暂无已发布的设备。" : "账本还是空的。<br><button class='button' data-add>添加第一台设备</button>")+'</td></tr>';
 }
 const pageLabels={home:"首页",tasks:"工作待办",notes:"随手记",salary:"工资收入",settings:"设置",overview:"设备台账 / 资产总览",devices:"设备台账 / 设备清单"};
 function currentPage() {
   const page=location.hash.slice(1);
+  if (publicView) return page==="devices"?"devices":"overview";
   return Object.hasOwn(pageLabels,page)?page:"home";
 }
 function renderPage() {
@@ -746,9 +764,10 @@ function renderPage() {
   $("overviewPage").hidden=deviceList;
   $("devicesPage").hidden=!deviceList;
   $("breadcrumb").textContent=pageLabels[page];
+  $("publicLedgerBanner").hidden=!publicView;
   renderWorkspaceName(page);
-  $("pageEyebrow").textContent=deviceList?"ASSET REGISTER":"PERSONAL ASSETS";
-  $("pageTitle").textContent=deviceList?"设备清单":"我的设备资产";
+  $("pageEyebrow").textContent=deviceList?"ASSET REGISTER":publicView?"PUBLIC ASSETS":"PERSONAL ASSETS";
+  $("pageTitle").textContent=deviceList?"设备清单":publicView?"公开设备台账":"我的设备资产";
   $("pageDescription").textContent=deviceList?"查看设备的购入、折旧和处置记录。":"追踪设备用了多久，以及价值如何随时间变化。";
   document.querySelectorAll("[data-nav]").forEach(link=>{
     const current=link.dataset.nav===page;
@@ -790,6 +809,7 @@ function updateEditor() {
   input.saleChannel.disabled=input.saleProceeds.disabled=!resale;
 }
 function openEditor(record) {
+  if (publicView) return;
   editId=record?.id ?? null;
   const form=$("form");
   form.reset();
@@ -832,9 +852,9 @@ function renderDetail() {
   const warranty=r.warranty ? r.warranty+(r.warranty<iso(today)?" · 已过保":r.warranty===iso(today)?" · 今日到期":" · 剩余 "+(toDay(r.warranty)-today)+" 天") : "未登记";
   $("detailTitle").textContent=r.name;
   $("detailSubtitle").textContent="资产卡片 · "+r.assetNo+" · "+[r.brand,r.category].filter(Boolean).join(" / ")+(personal===null?" · 示例设备":"");
-  $("editDetail").hidden=personal===null;
-  $("disposeDetail").hidden=personal===null || disposed;
-  $("activityDetail").hidden=personal===null || disposed;
+  $("editDetail").hidden=publicView || personal===null;
+  $("disposeDetail").hidden=publicView || personal===null || disposed;
+  $("activityDetail").hidden=publicView || personal===null || disposed;
   $("activityDetail").textContent=openPeriod(r)?"恢复使用":"维修 / 暂停";
   const blocks=[
     [disposed?"处置时已持有":"已持有",age(start,Math.max(start,day))],
@@ -921,6 +941,7 @@ $("disposeDetail").onclick=()=>{
   }
 };
 function openActivity(record) {
+  if (publicView) return;
   const form=$("activityForm"), fields=form.elements;
   const current=openPeriod(record), resuming=Boolean(current);
   activityId=record.id;
@@ -1243,7 +1264,7 @@ function refreshDate() {
 window.addEventListener("focus",refreshDate);
 setInterval(refreshDate,60000);
 window.addEventListener("storage",event=>{
-  if (event.key!==storageKey) return;
+  if (publicView || event.key!==storageKey) return;
   try {
     const updated=event.newValue===null ? null : readLedger(JSON.parse(event.newValue));
     for (const id of ["editor","activity","detail","backup"]) if ($(id).open) $(id).close();
@@ -1302,7 +1323,7 @@ function readWorkspace(raw) {
   return updated;
 }
 try {
-  workspace=readWorkspace(localStorage.getItem(workspaceKey));
+  workspace=readWorkspace(workspaceStorage.getItem(workspaceKey));
 } catch {
   $("workspaceWarning").hidden=false;
 }
@@ -1348,10 +1369,10 @@ applyTheme(workspace.theme);
 function saveWorkspace(next,message) {
   workspace=next;
   try {
-    const stored=readWorkspace(localStorage.getItem(workspaceKey));
+    const stored=readWorkspace(workspaceStorage.getItem(workspaceKey));
     workspace={...next,salary:stored.salary,salaryVault:stored.salaryVault};
     if (salarySession && salarySession.vault.ciphertext!==stored.salaryVault?.ciphertext) lockSalary();
-    localStorage.setItem(workspaceKey,JSON.stringify(workspace));
+    workspaceStorage.setItem(workspaceKey,JSON.stringify(workspace));
     $("workspaceWarning").hidden=true;
   } catch {
     $("workspaceWarning").hidden=false;
@@ -1360,6 +1381,11 @@ function saveWorkspace(next,message) {
   notify(message);
 }
 function renderWorkspaceName(page) {
+  if (publicView) {
+    $("workspaceBrand").textContent=$("workspaceBreadcrumb").textContent="公开设备台账";
+    document.title=pageLabels[page]+" · 公开设备台账";
+    return;
+  }
   for (const id of ["workspaceBrand","workspaceBreadcrumb","workspaceHeading"]) $(id).textContent=workspace.title;
   $("workspaceEyebrow").textContent=workspace.eyebrow;
   $("workspaceEyebrow").hidden=!workspace.eyebrow;
@@ -1467,7 +1493,7 @@ $("workspaceDelete").onclick=()=>{
   saveWorkspace({...workspace,[kind]:workspace[kind].filter(entry=>entry.id!==id)},"已删除。");
 };
 window.addEventListener("storage",event=>{
-  if (event.key!==workspaceKey) return;
+  if (publicView || event.key!==workspaceKey) return;
   try {
     workspace=readWorkspace(event.newValue);
     if (salarySession && salarySession.vault.ciphertext!==workspace.salaryVault?.ciphertext) lockSalary();
@@ -1617,7 +1643,7 @@ $("salaryUnlockForm").onsubmit=async event=>{
   const active=()=>operation===salaryOperation && currentPage()==="salary";
   setSalaryBusy(true);
   try {
-    const stored=readWorkspace(localStorage.getItem(workspaceKey));
+    const stored=readWorkspace(workspaceStorage.getItem(workspaceKey));
     const existing=stored.salaryVault;
     if (!existing && (password.length<10 || password!==confirmation)) {
       error.textContent=password.length<10?"密码至少需要 10 个字符。":"两次输入的密码不一致。";
@@ -1635,7 +1661,7 @@ $("salaryUnlockForm").onsubmit=async event=>{
       vault=await encryptSalary(entries,key,salt);
     }
     if (!active()) return;
-    const latest=readWorkspace(localStorage.getItem(workspaceKey));
+    const latest=readWorkspace(workspaceStorage.getItem(workspaceKey));
     if (latest.salaryVault?.ciphertext!==existing?.ciphertext ||
         (!existing && JSON.stringify(latest.salary)!==JSON.stringify(stored.salary))) {
       workspace=latest;
@@ -1645,7 +1671,7 @@ $("salaryUnlockForm").onsubmit=async event=>{
     }
     if (!existing) {
       const updated={...latest,salary:[],salaryVault:vault};
-      localStorage.setItem(workspaceKey,JSON.stringify(updated));
+      workspaceStorage.setItem(workspaceKey,JSON.stringify(updated));
       workspace=updated;
     } else workspace=latest;
     salarySession={key,vault,entries};
@@ -1666,7 +1692,7 @@ async function saveSalary(entries,message) {
   try {
     const vault=await encryptSalary(entries,session.key,session.vault.salt);
     if (operation!==salaryOperation || currentPage()!=="salary" || !$("salaryEditor").open) return false;
-    const stored=readWorkspace(localStorage.getItem(workspaceKey));
+    const stored=readWorkspace(workspaceStorage.getItem(workspaceKey));
     if (stored.salaryVault?.ciphertext!==session.vault.ciphertext) {
       workspace=stored;
       lockSalary();
@@ -1674,7 +1700,7 @@ async function saveSalary(entries,message) {
       return false;
     }
     const updated={...stored,salary:[],salaryVault:vault};
-    localStorage.setItem(workspaceKey,JSON.stringify(updated));
+    workspaceStorage.setItem(workspaceKey,JSON.stringify(updated));
     workspace=updated;
     salarySession={key:session.key,vault,entries};
     $("salaryEditor").close();
@@ -1753,14 +1779,14 @@ function readWorkspaceSnapshot(snapshot) {
   return {ledger,workspace:{tasks,notes,title,eyebrow,theme,salaryVault,salary:[]}};
 }
 function restoreWorkspaceSnapshot(snapshot) {
-  const previous=localStorage.getItem(storageKey);
+  const previous=workspaceStorage.getItem(storageKey);
   try {
-    if (snapshot.ledger===null) localStorage.removeItem(storageKey);
-    else localStorage.setItem(storageKey,JSON.stringify(snapshot.ledger));
-    localStorage.setItem(workspaceKey,JSON.stringify(snapshot.workspace));
+    if (snapshot.ledger===null) workspaceStorage.removeItem(storageKey);
+    else workspaceStorage.setItem(storageKey,JSON.stringify(snapshot.ledger));
+    workspaceStorage.setItem(workspaceKey,JSON.stringify(snapshot.workspace));
   } catch (error) {
-    if (previous===null) localStorage.removeItem(storageKey);
-    else localStorage.setItem(storageKey,previous);
+    if (previous===null) workspaceStorage.removeItem(storageKey);
+    else workspaceStorage.setItem(storageKey,previous);
     throw error;
   }
   personal=snapshot.ledger?.devices ?? null;
@@ -1813,6 +1839,6 @@ render();
 
 </script>
 <script src="./public-ledger-config.js"></script>
-<script src="./public-ledger.js"></script>
+<script src="./public-ledger.js?v=2"></script>
 </body>
 </html>

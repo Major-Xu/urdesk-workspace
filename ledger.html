@@ -11,8 +11,13 @@
     .card{margin-top:20px;padding:clamp(14px,3vw,26px);background:white;border:1px solid #dce6da;border-radius:18px}
     #publicDeviceMessage{margin:0;color:#495f54}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;margin-top:15px;text-align:left}th,td{padding:12px;border-bottom:1px solid #e1e9df;white-space:nowrap}th{background:#eff4ed}tr:last-child td{border-bottom:0}
   </style>
+  <script>
+    if (!new URLSearchParams(location.search).has("summary")) {
+      location.replace("./?view=public" + location.hash);
+    }
+  </script>
   <script src="./public-ledger-config.js" defer></script>
-  <script src="./public-ledger.js" defer></script>
+  <script src="./public-ledger.js?v=2" defer></script>
 </head>
 <body>
   <main>

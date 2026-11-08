@@ -12,5 +12,8 @@
 
 1. 在 Supabase Authentication 创建站主邮箱账号，记录该账号的用户 ID。关闭公开注册。
 2. 在 SQL Editor 执行 `public-ledger.sql`，先把零 UUID 替换成站主用户 ID。验证匿名用户能读取公开行、其他用户无法修改、站主可以修改。
-3. 在 `public-ledger-config.js` 填写 `window.urdeskLedgerConfig = { url: "项目 URL", publishableKey: "公开 publishable key" };`。使用 HTTPS 项目 URL，省略尾部斜杠。密钥必须是可公开的 publishable key。
-4. 发布网页。先用示例设备核对访客页和保存后更新，再用真实台账。已有浏览器备份格式继续适用。
+3. 执行 `public-ledger-module.sql`，增加完整设备台账字段。
+4. 在 `public-ledger-config.js` 填写 `window.urdeskLedgerConfig = { url: "项目 URL", publishableKey: "公开 publishable key" };`。使用 HTTPS 项目 URL，省略尾部斜杠。密钥必须是可公开的 publishable key。
+5. 发布网页。先用示例设备核对访客页和保存后更新，再用真实台账。已有浏览器备份格式继续适用。
+
+升级后，旧版摘要仍可从公开页访问，站主重新发布一次即可切换到完整台账。公开内容包括设备购入明细、处置成交价、维修费用和设备备注。

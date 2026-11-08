@@ -25,6 +25,43 @@
 
   const read = async () => (await request(tablePath + "?id=eq.1&select=" + fields))[0];
 
+  const publicStatus = document.getElementById("publicLedgerLoad");
+  if (publicStatus && publicView) {
+    let loadedRevision = -1;
+    const time = new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Shanghai" });
+    async function refreshModule() {
+      if (!config) {
+        publicStatus.textContent = "公开台账尚未连接。";
+        return;
+      }
+      try {
+        const [entry] = await request(tablePath + "?id=eq.1&select=revision,published_at,ledger");
+        if (!entry?.ledger) {
+          publicStatus.textContent = entry?.published_at ? "完整台账等待站主重新发布。" : "站主还没有发布设备记录。";
+          document.getElementById("legacyPublicLedger").hidden = !entry?.published_at;
+          return;
+        }
+        if (entry.revision < loadedRevision) return;
+        if (entry.revision > loadedRevision) {
+          const ledger = readLedger(entry.ledger);
+          personal = ledger.devices;
+          nextAssetNo = ledger.nextAssetNo;
+          if (detailId && !personal.some(device => device.id === detailId)) document.getElementById("detail").close();
+          render();
+          if (document.getElementById("detail").open) renderDetail();
+          loadedRevision = entry.revision;
+        }
+        publicStatus.textContent = "只读 · 更新于 " + time.format(new Date(entry.published_at)) + "（北京时间）";
+        document.getElementById("legacyPublicLedger").hidden = true;
+      } catch {
+        publicStatus.textContent = "暂时无法读取最新台账，请稍后刷新。";
+      }
+    }
+    refreshModule();
+    window.addEventListener("focus", refreshModule);
+    return;
+  }
+
   const rows = document.getElementById("publicDeviceRows");
   if (rows) {
     const message = document.getElementById("publicDeviceMessage");
@@ -104,7 +141,7 @@
         queued = null;
         status.textContent = "正在发布设备台账…";
         const updated = await request(tablePath + "?id=eq.1&revision=eq." + revision + "&select=" + fields, {
-          method: "PATCH", body: { devices: snapshot, revision: revision + 1 }, accessToken: token
+          method: "PATCH", body: { ...snapshot, revision: revision + 1 }, accessToken: token
         });
         if (updated.length !== 1) {
           enabled = false;
@@ -128,20 +165,41 @@
   }
 
   function snapshot() {
-    return personal?.map(device => ({
+    if (personal === null) return null;
+    const devices = personal.map(device => ({
       name: device.name, brand: device.brand, category: device.category,
       status: statusLabels[statusOf(device)], purchased_on: device.date,
       disposed_on: device.disposedOn, value: recordValue(device)
     }));
+    const ledger = { version: 4, devices: personal.map(device => {
+      const { id, assetNo, name, brand, category, date, cost, salvage, life, warranty, note,
+        acquireMethod, acquirePlatform, original, discount, subsidy, tradeCredit, tradeFrom,
+        disposedOn, disposeMethod, saleChannel, saleProceeds } = device;
+      const activity = device.activity.map(({ kind, start, end, expense, note }) => ({ kind, start, end, expense, note }));
+      return { id, assetNo, name, brand, category, date, cost, salvage, life, warranty, note,
+        acquireMethod, acquirePlatform, original, discount, subsidy, tradeCredit, tradeFrom,
+        disposedOn, disposeMethod, saleChannel, saleProceeds, activity };
+    }), nextAssetNo };
+    readLedger(ledger);
+    return { devices, ledger };
+  }
+
+  function getPublishSnapshot() {
+    try { return snapshot(); }
+    catch {
+      status.textContent = "设备数据暂时无法发布，请检查购入、维修及处置记录。";
+      return null;
+    }
   }
 
   button.addEventListener("click", () => {
-    const current = snapshot();
-    if (!current) {
+    const current = getPublishSnapshot();
+    if (personal === null) {
       status.textContent = "请先建立个人台账或导入设备备份。";
       return;
     }
-    if (!confirm("用这台浏览器里的 " + current.length + " 台设备更新公开台账？本次登录期间的设备修改也会公开。")) return;
+    if (!current) return;
+    if (!confirm("用这台浏览器里的 " + current.devices.length + " 台设备更新公开台账？设备备注、购入明细、维修费用和处置成交价都会公开。本次登录期间的设备修改也会公开。")) return;
     enabled = true;
     queued = current;
     publish();
@@ -157,7 +215,7 @@
   signOut.addEventListener("click", () => endSession("已退出发布。"));
   window.urdeskPublishDeviceChanges = () => {
     if (!enabled) return;
-    queued = snapshot();
+    queued = getPublishSnapshot();
     publish();
   };
 })();
