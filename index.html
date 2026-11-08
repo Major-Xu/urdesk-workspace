@@ -53,7 +53,15 @@
 .hero-heading h1,.workspace-hero .overline,.brand b,.topbar>span:first-child{overflow-wrap:anywhere}
 .hero-heading h1{min-width:0}.hero-rename{color:var(--theme-on-dark,#edf8ef);background:#ffffff0e;border-color:#ffffff35;min-height:32px;padding:5px 8px}.hero-rename:hover{background:#ffffff22}
 .workspace-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.module-icon.salary-icon{background:var(--theme-soft,#e4f0eb);color:var(--theme-strong,#265f54)}
-.salary-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.salary-list .table-wrap{overflow-x:auto}.salary-list .salary-source{max-width:200px;white-space:normal;overflow-wrap:anywhere}
+.salary-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.salary-list .table-wrap{overflow-x:auto}
+.salary-trend{margin-bottom:14px;padding:16px}.salary-trend-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.salary-trend h2{margin:0}.salary-trend .sub{margin:4px 0 0}.salary-trend-scroll{overflow-x:auto}
+.salary-trend svg{display:block;width:100%;min-width:570px;margin-top:12px;font:12px system-ui,sans-serif;color:var(--muted)}
+.salary-trend-legend{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0;font-size:12px;color:var(--muted)}
+.salary-trend-legend i{display:inline-block;width:14px;margin-right:5px;vertical-align:middle;border-top:3px solid var(--theme-primary,#205e46)}
+.salary-trend-legend i.housing{border-color:#a65820;border-top-style:dashed}.salary-trend details{margin-top:10px;font-size:13px}.salary-trend summary{cursor:pointer}
+.salary-trend .table-wrap{margin-top:8px}
+.salary-list .salary-source{max-width:200px;white-space:normal;overflow-wrap:anywhere}
 .salary-table-note{display:block;max-width:215px;white-space:normal;overflow-wrap:anywhere}
 @media(max-width:1120px){.workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:660px){.workspace-grid{grid-template-columns:1fr}.salary-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -242,8 +250,15 @@ html[data-view="public"] .sidebar .nav-group{display:grid;gap:6px}
     </section>
     <div id="salaryContent" hidden>
     <div id="salaryMetrics" class="metrics salary-metrics" aria-label="工资汇总"></div>
+    <section class="panel salary-trend" aria-labelledby="salaryTrendTitle">
+      <div class="salary-trend-head">
+        <div><h2 id="salaryTrendTitle">收入趋势</h2><p class="sub" id="salaryTrendCaption"></p></div>
+        <select id="salaryYear" class="filter" aria-label="按工资归属年份筛选"></select>
+      </div>
+      <div id="salaryTrend"></div>
+    </section>
     <section class="panel list salary-list" aria-labelledby="salaryListTitle">
-      <div class="list-top"><div><h2 id="salaryListTitle">到账记录</h2><p class="sub" id="salaryCaption"></p></div><select id="salaryYear" class="filter" aria-label="按工资归属年份筛选"></select></div>
+      <div class="list-top"><div><h2 id="salaryListTitle">到账记录</h2><p class="sub" id="salaryCaption"></p></div></div>
       <div class="table-wrap" tabindex="0" aria-label="工资记录表格，可横向滚动"><table><thead><tr><th scope="col">工资月份</th><th scope="col">到账日期</th><th scope="col">类型</th><th scope="col">来源</th><th scope="col">税前金额</th><th scope="col">实收金额</th><th scope="col">公积金收入</th><th scope="col">备注</th><th scope="col">操作</th></tr></thead><tbody id="salaryRows"></tbody></table></div>
     </section>
     </div>
@@ -1595,12 +1610,74 @@ function lockSalary() {
   setSalaryBusy(false);
   renderSalary();
 }
+function renderSalaryTrend(entries, year) {
+  const allYears=year==="all";
+  const caption=$("salaryTrendCaption");
+  const chart=$("salaryTrend");
+  caption.textContent=allYears?"按工资归属年份汇总 · 金额单位为人民币":"按工资归属月份汇总 · 未登记的月份留空";
+  if (!entries.length) {
+    chart.innerHTML='<p class="empty">当前范围没有收入记录。</p>';
+    return;
+  }
+  const grouped=new Map();
+  for (const entry of entries) {
+    const key=allYears?entry.month.slice(0,4):entry.month;
+    const totals=grouped.get(key) ?? {net:0,housing:null};
+    totals.net+=entry.net;
+    if (entry.housingFund!=null) totals.housing=(totals.housing ?? 0)+entry.housingFund;
+    grouped.set(key,totals);
+  }
+  const keys=allYears?[...grouped.keys()].sort():
+    Array.from({length:12},(_,index)=>year+"-"+String(index+1).padStart(2,"0"));
+  const points=keys.map(key=>({
+    label:allYears?key+" 年":key,
+    tick:allYears?key:Number(key.slice(5))+" 月",
+    net:grouped.get(key)?.net ?? null,
+    housing:grouped.get(key)?.housing ?? null
+  }));
+  const hasHousing=points.some(point=>point.housing!==null);
+  const peak=points.reduce((max,point)=>Math.max(max,point.net ?? 0,point.housing ?? 0),100);
+  const step=10**Math.floor(Math.log10(peak/4));
+  const ceiling=4*Math.ceil(peak/(step*4))*step;
+  const width=760, left=98, right=735, top=16, bottom=164;
+  const x=index=>points.length===1?(left+right)/2:left+(right-left)*index/(points.length-1);
+  const y=value=>bottom-(bottom-top)*value/ceiling;
+  const axes=Array.from({length:5},(_,i)=>{
+    const value=i*ceiling/4, position=y(value);
+    return '<path d="M'+left+' '+position+'H'+right+'" stroke="currentColor" opacity=".2"/>'+
+      '<text x="'+(left-8)+'" y="'+(position+4)+'" text-anchor="end" fill="currentColor">'+axisValue(value)+'</text>';
+  }).join("");
+  const stride=Math.ceil(points.length/12);
+  const ticks=points.map((point,index)=>index%stride===0?
+    '<text x="'+x(index)+'" y="187" text-anchor="middle" fill="currentColor">'+point.tick+'</text>':"").join("");
+  const line=(key,label,color,dashed=false)=>{
+    let path="", dots="", connected=false;
+    points.forEach((point,index)=>{
+      const amount=point[key];
+      if (amount===null) { connected=false; return; }
+      const px=x(index), py=y(amount);
+      path+=(connected?"L":"M")+px+","+py;
+      connected=true;
+      dots+='<circle cx="'+px+'" cy="'+py+'" r="4" fill="'+color+'"><title>'+point.label+' '+label+' '+yuanWithCents(amount)+'</title></circle>';
+    });
+    return '<path d="'+path+'" fill="none" stroke="'+color+'" stroke-width="2.6"'+(dashed?' stroke-dasharray="6 4"':'')+'/>'+dots;
+  };
+  const amount=value=>value===null?"—":yuanWithCents(value);
+  chart.innerHTML='<div class="salary-trend-scroll" tabindex="0" aria-label="收入趋势图，可横向滚动"><svg viewBox="0 0 '+width+' 198" role="img" aria-label="'+
+    (allYears?"年度收入趋势":"月度收入趋势")+'">'+axes+ticks+line("net","工资实收","var(--theme-primary,#205e46)")+
+    (hasHousing?line("housing","公积金","#a65820",true):"")+'</svg></div><div class="salary-trend-legend"><span><i></i>工资实收</span>'+
+    (hasHousing?'<span><i class="housing"></i>公积金</span>':'')+'</div><details><summary>查看各期金额</summary><div class="table-wrap"><table>'+
+    '<thead><tr><th scope="col">'+(allYears?"年份":"月份")+'</th><th scope="col">工资实收</th><th scope="col">公积金</th></tr></thead><tbody>'+
+    points.map(point=>'<tr><th scope="row">'+point.label+'</th><td>'+amount(point.net)+'</td><td>'+amount(point.housing)+'</td></tr>').join("")+
+    '</tbody></table></div></details>';
+}
 function renderSalary() {
   const unlocked=Boolean(salarySession);
   $("salaryGate").hidden=unlocked;
   $("salaryContent").hidden=$("salaryActions").hidden=!unlocked;
   if (!unlocked) {
-    $("salaryRows").innerHTML=$("salaryMetrics").innerHTML=$("salaryCaption").textContent="";
+    $("salaryRows").innerHTML=$("salaryMetrics").innerHTML=$("salaryTrend").innerHTML="";
+    $("salaryCaption").textContent=$("salaryTrendCaption").textContent="";
     $("salaryYear").replaceChildren();
     const setup=!workspace.salaryVault;
     $("salaryGateTitle").textContent=setup?"设置工资收入密码":"解锁工资收入";
@@ -1624,6 +1701,7 @@ function renderSalary() {
   yearSelect.value=salaryYear;
   const rows=all.filter(entry=>salaryYear==="all" || entry.month.slice(0,4)===salaryYear)
     .sort((a,b)=>b.month.localeCompare(a.month) || b.received.localeCompare(a.received));
+  renderSalaryTrend(rows,salaryYear);
   const current=all.filter(entry=>entry.month===month);
   const gross=rows.filter(entry=>entry.gross!==null);
   const netTotal=items=>items.reduce((sum,entry)=>sum+entry.net,0);
