@@ -25,6 +25,7 @@ function validDate(value) {
 
 function normalizeText(raw) {
   return raw.normalize("NFKC").replace(/\r\n?/g, "\n")
+    .replaceAll("⻋", "车").replaceAll("⻔", "门").replaceAll("⻓", "长")
     .replace(/(?<=[\u3400-\u9fff]) +(?=[\u3400-\u9fff])/g, "")
     .trim();
 }
@@ -75,7 +76,7 @@ function parseInvoice(raw) {
   const labeledMoney = /[¥￥]\s*((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,2})?)(?![\d.,%])/g;
   for (const [line] of totalLines) {
     const total = line.split("\n")[0];
-    const small = line.match(/小写\s*\)?[ \t:：]*(?:\n[ \t]*)?(?:[¥￥][ \t]*)?((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,2})?)(?![\d.,%])/);
+    const small = line.match(/小写\s*\)?[ \t:：]*(?:\n[ \t]*)?(?:[¥￥Y][ \t]*)?((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{1,2})?)(?![\d.,%])/);
     if (small) amounts.add(amountInCents(small[1]));
     else for (const match of total.matchAll(labeledMoney)) amounts.add(amountInCents(match[1]));
   }
